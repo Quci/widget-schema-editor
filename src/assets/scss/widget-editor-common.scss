@@ -1,0 +1,64 @@
+// 主题色
+$theme-color: #2c63ff;
+// 渐变色
+$theme-color-hover: #2c83ff;
+$theme-color2: #2c83ff;
+// 背景色
+$bg-color: #f5f6fa;
+
+/* 特别说明：mixin.scss主要用于存放各页面scss的变量、通用方法等，
+   切勿放置普通的css样式内容，以免出现重复的css代码，造成样式代码臃肿。@liudan185
+ */
+
+// 重要文字
+$color1: #292b33;
+// 普通文字
+$color2: #5c5f66;
+// 次要操作
+$color3: #a1a6b3;
+// 默认文字
+$color4: #dadde6;
+// 间隔线 | 空间边框
+$color5: #e6e9f2;
+// 次要间隔线
+$color6: #f2f3f7;
+
+$table-card-title-color: #232321;
+// 常用色
+$white: #fff;
+
+$theme-width: 1200px;
+
+$general-background-color: #f5f6fa; // transparent; #f5f6fa
+$widget-widget-container-height: 100vh; // calc(100vh - 0px);
+$widget-widget-min-height: 500px;
+$widget-widget-info-height: 300px;
+
+$header-height: 60px;
+$header-color: transparent;
+// 编辑器使用的变量
+$header-background-color: #fff;
+$widget-editor-container-height: 100vh;
+$widget-editor-nav-bar-height: 60px;
+$widget-editor-content-height: calc(100vh - 60px);
+$widget-editor-left-sidebar-width: 90px;
+$widget-editor-min-height: 500px;
+$widget-schema-height: calc(100vh - 60px);
+$body-background-color: #f5f6fa;
+
+// 组件编辑器各级元素使用的颜色值
+$widget-container-color: #4fcfd3; // 原值：#36cfc9; // Cyan / 明青
+$widget-row-color: #76bf8a; // 原值：#73d13d; // Polar Green / 极光绿
+$widget-column-color: #c264ff; // 原值：#9254de; // Golden Purple / 酱紫
+$widget-color: #2c63ff; // 原值：#2c63ff; // Daybreak Blue / 拂晓蓝
+$widget-slot-color: #a1a6b3;
+$ui-elem-border-color: #40a9ff; // ui元件默认选中边框色
+$ui-elem-bg-color: #e6f7ff; // ui元件默认选中背景色
+
+// 组件编辑器各级元素hover态的颜色值
+$widget-container-hover-color: #05bcc3;
+$widget-row-hover-color: #38bc5d;
+$widget-column-hover-color: #9431d5;
+$widget-hover-color: #103dbe;
+$widget-slot-hover-color: #5c5f66;
+$ui-elem-border-hover-color: #096dd9; // ui元件默认选中边框色

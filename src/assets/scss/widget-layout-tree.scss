@@ -1,0 +1,215 @@
+/* 组件内容树形Tree相关样式，重定义ant样式 */
+#widgetLayoutTree {
+  // 节点连接线
+  .ant-tree-show-line .ant-tree-indent-unit:first-child::after {
+    position: absolute;
+    top: -5px;
+    right: 12px;
+    bottom: -5px;
+    border-right: 1px solid #d9d9d9;
+    content: '';
+  }
+
+  .ant-tree-show-line .ant-tree-indent-unit::before {
+    position: absolute;
+    top: calc(100% - 4px);
+    right: -12px;
+    bottom: -35px;
+    border-right: 1px solid #d9d9d9;
+    content: '';
+  }
+
+  // 树节点对象
+  .ant-tree-list-holder-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  // 节点icon
+  .ant-tree-switcher {
+    margin: 0 auto 5px 0;
+    position: relative;
+    display: inline-block;
+    height: 15px;
+    line-height: 15px;
+  }
+  // 节点内容
+  .ant-tree-node-content-wrapper {
+    margin: 0 auto 5px 0;
+    position: relative;
+    display: inline-block;
+    height: 30px;
+    width: 100%;
+    padding: 0 15px;
+    text-align: left;
+    background: #f2f2f2;
+    border-radius: 30px;
+    border: 1px solid #fff;
+    box-sizing: border-box;
+    z-index: 3;
+    cursor: default;
+  }
+
+  /* 实体组件接受拖拽元素时的样式 */
+  .tree-jdw-widget.drag-over-gap-top {
+    .ant-tree-node-content-wrapper {
+      margin-top: 15px;
+      border-top: 1px solid $widget-color;
+    }
+  }
+
+  .tree-jdw-widget.drag-over {
+    .ant-tree-node-content-wrapper {
+      color: $widget-color;
+      border: 1px solid $widget-color;
+    }
+  }
+
+  .tree-widget-slot.drag-over,
+  .tree-elem-slot.drag-over,
+  .tree-embed-widget-slot.drag-over {
+    .ant-tree-node-content-wrapper {
+      color: $widget-color;
+      border: 1px solid $widget-color;
+    }
+  }
+
+  .tree-widget-slot,
+  .tree-elem-slot,
+  .tree-embed-widget-slot {
+    > .ant-tree-node-content-wrapper:hover {
+      color: $widget-slot-color;
+      border: 1px solid $widget-slot-color;
+    }
+
+    > .ant-tree-node-selected {
+      background: $widget-slot-color;
+      color: #fff;
+
+      &:hover {
+        background: $widget-slot-hover-color;
+        color: #fff;
+      }
+    }
+  }
+
+  .tree-jdw-widget.drag-over-gap-bottom {
+    .ant-tree-node-content-wrapper {
+      margin-bottom: 15px;
+      border-bottom: 1px solid $widget-color;
+    }
+  }
+
+  /* 楼层导航各级元素hover态颜色值 */
+  .tree-widget-container > .ant-tree-node-content-wrapper:hover {
+    color: $widget-container-color;
+    border: 1px solid $widget-container-color;
+  }
+
+  .tree-widget-row > .ant-tree-node-content-wrapper:hover {
+    color: $widget-row-color;
+    border: 1px solid $widget-row-color;
+  }
+
+  .tree-widget-column > .ant-tree-node-content-wrapper:hover {
+    color: $widget-column-color;
+    border: 1px solid $widget-column-color;
+  }
+
+  .tree-jdw-widget > .ant-tree-node-content-wrapper:hover {
+    color: $widget-color;
+    border: 1px solid $widget-color;
+  }
+
+  .ant-tree .ant-tree-treenode {
+    align-items: center;
+  }
+
+  /* 楼层导航各级元素选中态颜色值 */
+
+  // 块级容器选中颜色
+  .tree-widget-container > .ant-tree-node-selected {
+    background: $widget-container-color;
+    color: #fff;
+
+    &:hover {
+      background: $widget-container-hover-color;
+      color: #fff;
+    }
+  }
+  // 行级容器选中颜色
+  .tree-widget-row > .ant-tree-node-selected {
+    background: $widget-row-color;
+    color: #fff;
+
+    &:hover {
+      background: $widget-row-hover-color;
+      color: #fff;
+    }
+  }
+  // 列级容器选中颜色
+  .tree-widget-column > .ant-tree-node-selected {
+    background: $widget-column-color;
+    color: #fff;
+
+    &:hover {
+      background: $widget-column-hover-color;
+      color: #fff;
+    }
+  }
+
+  .tree-jdw-widget > .ant-tree-node-selected {
+    background: $widget-color;
+    color: #fff;
+
+    &:hover {
+      background: $widget-hover-color;
+      color: #fff;
+    }
+  }
+
+  // 节点中的操作按钮
+  .layout-item-cont {
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+
+    .layout-item-title {
+      width: 100px;
+      height: 28px;
+      line-height: 28px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .layout-item-icon {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+
+      .icon-add-row,
+      .icon-add-column,
+      .icon-add-slot,
+      .icon-delete {
+        margin-left: 6px;
+        width: 23px;
+        height: 23px;
+        background-color: #fff;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-sizing: border-box;
+        border-radius: 12px;
+
+        img {
+          height: 20px;
+        }
+      }
+    }
+  }
+}

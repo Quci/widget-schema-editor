@@ -1,0 +1,76 @@
+{
+  "name": "@wibetter/widget-schema-editor",
+  "version": "0.1.1",
+  "description": "UI组件模型设置（添加可配置项）",
+  "keywords": [
+    "jsonSchema",
+    "UI组件模型",
+    "可视化模型设置",
+    "添加可配置项"
+  ],
+  "author": "ldan@wibetter",
+  "license": "MIT",
+  "main": "dist/index.umd.js",
+  "scripts": {
+    "dev": "akfun dev",
+    "build2lib": "akfun build2lib",
+    "build2demo": "akfun build",
+    "format": "prettier --write \"src/**/**/*.{js,jsx,ts,tsx,vue,scss,json}\""
+  },
+  "files": [
+    "dist/*"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "src/**/**/*.{js,jsx,ts,tsx,vue,scss,json}": [
+      "prettier --write"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+http://git@github.com:wibetter/widget-schema-editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wibetter/widget-schema-editor/issues"
+  },
+  "dependencies": {
+    "@ant-design/icons": "4.0.0",
+    "@babel/polyfill": "^7.10.1",
+    "@wibetter/json-editor": "^3.3.70",
+    "@wibetter/json-utils": "^1.2.30",
+    "@wibetter/ui-schema-editor": "^1.1.0",
+    "ace-builds": "^1.4.12",
+    "antd": "4.7.3",
+    "mobx": "5.9.4",
+    "mobx-react": "6.1.3",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-ace": "^9.4.0",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^9.1.1",
+    "akfun": "^1.5.12",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.9",
+    "prettier": "^2.0.5"
+  },
+  "engines": {
+    "node": ">= 10.13.0",
+    "npm": ">= 6.4.1"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8",
+    "iOS >= 8",
+    "Firefox >= 20",
+    "Android > 4.4"
+  ]
+}
