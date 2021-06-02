@@ -150,7 +150,7 @@ export default class WidgetSchemaStore {
     // 1.生成propKey
     const propKey = `${
       configProp.jsonKey
-    }_${configProp.elemIndexRoute.replaceAll(
+    }__${configProp.elemIndexRoute.replaceAll(
       '-',
       'x',
     )}_${configProp.propIndexRoute.replaceAll('-', 'x')}`;

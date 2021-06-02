@@ -50,6 +50,10 @@ class BaseFormSchema extends React.PureComponent {
       console.log(jsonKey);
       console.log(propJsonSchema);
 
+      // 在字段Schema中记录原始路径值
+      propJsonSchema['curElemIndex'] = curElemIndex;
+      propJsonSchema['indexRoute'] = indexRoute;
+
       addConfigProp({
         elemIndexRoute: curElemIndex,
         propIndexRoute: indexRoute,
