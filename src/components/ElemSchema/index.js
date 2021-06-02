@@ -11,21 +11,34 @@ import './index.scss';
 
 class ElemSchema extends React.PureComponent {
   static propTypes = {
-    data: PropTypes.object,
+    curElemIndex: PropTypes.string,
+    curElemData: PropTypes.object,
+    curSchemaData: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
+    if (props.curElemIndex) {
+      this.props.updateCurElemIndex(props.curElemIndex);
+    }
+    if (props.curElemData) {
+      this.props.initCurElemData(props.curElemData);
+    }
     // 根据props.data对jsonSchema进行初始化
-    if (props.data) {
-      this.props.initJSONSchemaData(props.data);
-      console.log(props.data);
+    if (props.curSchemaData) {
+      this.props.initJSONSchemaData(props.curSchemaData);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(nextProps.data, this.props.data)) {
-      this.props.initJSONSchemaData(nextProps.data);
+    if (!isEqual(nextProps.curElemIndex, this.props.curElemIndex)) {
+      this.props.updateCurElemIndex(nextProps.curElemIndex);
+    }
+    if (!isEqual(nextProps.curElemData, this.props.curElemData)) {
+      this.props.initCurElemData(nextProps.curElemData);
+    }
+    if (!isEqual(nextProps.curSchemaData, this.props.curSchemaData)) {
+      this.props.initJSONSchemaData(nextProps.curSchemaData);
     }
   }
 
@@ -104,7 +117,9 @@ class ElemSchema extends React.PureComponent {
 
 export default inject((stores) => ({
   jsonSchema: stores.widgetSchemaStore.jsonSchema,
+  initCurElemData: stores.widgetSchemaStore.initCurElemData,
   initJSONSchemaData: stores.widgetSchemaStore.initJSONSchemaData,
+  updateCurElemIndex: stores.widgetSchemaStore.updateCurElemIndex,
   getSchemaByIndexRoute: stores.widgetSchemaStore.getSchemaByIndexRoute,
   indexRoute2keyRoute: stores.widgetSchemaStore.indexRoute2keyRoute,
 }))(observer(ElemSchema));

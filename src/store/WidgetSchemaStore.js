@@ -53,9 +53,27 @@ export default class WidgetSchemaStore {
   @observable triggerChange = false;
 
   /**
-   * jsonSchema: JSONSchema数据对象
+   * 记录当前元素在widgetLayout中的位置
+   */
+  @observable curElemIndex = '';
+
+  /**
+   * curElemData: 当前元素在widgetLayout中记录的数据对象（type、title、class、data等）
+   */
+  @observable curElemData = {};
+
+  /**
+   * jsonSchema: 当前元素Schema数据
    */
   @observable jsonSchema = {};
+
+  @computed get curElemDataObj() {
+    return toJS(this.curElemData);
+  }
+
+  @computed get JSONSchemaObj() {
+    return toJS(this.jsonSchema);
+  }
 
   /**
    * onChange: jsonSchema数据变动触发的onChange
@@ -68,6 +86,16 @@ export default class WidgetSchemaStore {
   @action.bound
   triggerChangeAction() {
     this.triggerChange = !this.triggerChange;
+  }
+
+  /** 根据索引路径获取对应的json数据[非联动式数据获取]  */
+  @action.bound
+  initCurElemData(curElemData) {
+    if (!curElemData || JSON.stringify(curElemData) === '{}') {
+      this.curElemData = {}; // 重置为空
+    } else if (!isEqual(curElemData, this.curElemDataObj)) {
+      this.curElemData = curElemData;
+    }
   }
 
   /** 根据索引路径获取对应的json数据[非联动式数据获取]  */
@@ -88,8 +116,9 @@ export default class WidgetSchemaStore {
     }
   }
 
-  @computed get JSONSchemaObj() {
-    return toJS(this.jsonSchema);
+  @action.bound
+  updateCurElemIndex(curElemIndex) {
+    this.curElemIndex = curElemIndex;
   }
 
   /** 初始化jsonData */

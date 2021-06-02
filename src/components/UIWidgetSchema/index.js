@@ -34,7 +34,9 @@ class UIWidgetSchema extends React.PureComponent {
 
     this.state = {
       defaultSelectedKeys: [], // 楼层导航默认选中的项
-      curSchemaData: {}, // 记录当前选中的元素Schema数据
+      curElemIndex: '', // 记录当前元素在widgetLayout中的位置
+      curElemData: {}, // 记录当前元素在widgetLayout中存放的数据对象
+      curSchemaData: {}, // 记录当前元素Schema数据
       elemSchemaVisible: false, // 是否显示当前元素模型设置面板
     };
 
@@ -103,6 +105,8 @@ class UIWidgetSchema extends React.PureComponent {
     if (curElem && curElem.data && curElem.data.schema) {
       // 当前Schema在widgetLayout中
       this.setState({
+        curElemIndex: currentIndex,
+        curElemData: curElem,
         curSchemaData: curElem.data.schema,
         elemSchemaVisible: true,
       });
@@ -129,6 +133,8 @@ class UIWidgetSchema extends React.PureComponent {
         curElemSchema = AntdUISchema[`${curElem.name}Schema`] || {};
       }
       this.setState({
+        curElemIndex: currentIndex,
+        curElemData: curElem,
         curSchemaData: curElemSchema,
         elemSchemaVisible: true,
       });
@@ -148,7 +154,7 @@ class UIWidgetSchema extends React.PureComponent {
           <div
             className="icon-add-schema"
             onClick={(event) => {
-              // event.preventDefault(); // 阻止默认的行为，比如链接的点击跳转
+              event.preventDefault(); // 阻止默认的行为，比如链接的点击跳转
               event.stopPropagation(); // 阻止冒泡
               this.showElemSchemaEditor(currentIndex);
             }}
@@ -325,7 +331,8 @@ class UIWidgetSchema extends React.PureComponent {
 
   render() {
     const { currentWidgetLayout } = this.props;
-    const { curSchemaData, elemSchemaVisible } = this.state;
+    const { curElemIndex, curElemData, curSchemaData, elemSchemaVisible } =
+      this.state;
 
     return (
       <div id="widget-schema-editor" className="widget-schema-editor-container">
@@ -351,21 +358,23 @@ class UIWidgetSchema extends React.PureComponent {
           )}
         </div>
         {/* 为当前组件添加可配置项 */}
-        {elemSchemaVisible && (
-          <Modal
-            title={
-              curSchemaData && curSchemaData.title
-                ? `${curSchemaData.title}（添加配置项）`
-                : `添加配置项`
-            }
-            width={700}
-            visible={elemSchemaVisible}
-            onCancel={this.closeElemSchema}
-            onOk={this.closeElemSchema}
-          >
-            <ElemSchema data={curSchemaData} />
-          </Modal>
-        )}
+        <Modal
+          title={
+            curSchemaData && curSchemaData.title
+              ? `${curSchemaData.title}（添加配置项）`
+              : `添加配置项`
+          }
+          width={700}
+          visible={elemSchemaVisible}
+          onCancel={this.closeElemSchema}
+          onOk={this.closeElemSchema}
+        >
+          <ElemSchema
+            curElemIndex={curElemIndex}
+            curElemData={curElemData}
+            curSchemaData={curSchemaData}
+          />
+        </Modal>
       </div>
     );
   }
