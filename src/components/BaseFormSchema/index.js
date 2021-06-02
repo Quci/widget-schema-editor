@@ -32,40 +32,74 @@ class BaseFormSchema extends React.PureComponent {
    * */
   setProp2configZProps = (event) => {
     const { checked } = event.target;
+    const { addConfigProp, cancelConfigProp } = this.props;
     if (checked) {
       // 将当前字段设置为可配置项
       const { curElemIndex, curElemDataObj, jsonSchema } = this.props; // 当前字段相关数据
-      const { indexRoute, jsonKey, targetJsonSchema } = this.props; // 当前字段相关数据
-      const elemJsonSchema = toJS(jsonSchema);
-      const propJsonSchema = toJS(targetJsonSchema);
+      const { parentType, indexRoute, jsonKey, targetJsonSchema } = this.props; // 当前字段相关数据
+      const elemJsonSchema = toJS(jsonSchema); // 当前元件Schema
+      const propJsonSchema = toJS(targetJsonSchema); // 当前字段schema
 
       // 待开发
       console.log(curElemIndex);
       console.log(curElemDataObj);
       console.log(elemJsonSchema);
 
+      console.log(parentType);
       console.log(indexRoute);
       console.log(jsonKey);
       console.log(propJsonSchema);
+
+      addConfigProp({
+        elemIndexRoute: curElemIndex,
+        propIndexRoute: indexRoute,
+        propType: parentType,
+        jsonKey,
+        propSchema: propJsonSchema,
+      });
     } else {
       // 取消当前字段为可配置项
-      const { curElemIndex, indexRoute, jsonKey } = this.props;
+      const { parentType, curElemIndex, indexRoute, jsonKey } = this.props;
       console.log(curElemIndex);
       console.log(indexRoute);
       console.log(jsonKey);
+
+      cancelConfigProp({
+        elemIndexRoute: curElemIndex,
+        propIndexRoute: indexRoute,
+        propType: parentType,
+        jsonKey,
+      });
     }
   };
 
+  /** 检查当前字段是否可配置 */
+  checkConfigProp = () => {
+    const { checkConfigProp } = this.props;
+    const { parentType, curElemIndex, indexRoute, jsonKey } = this.props;
+
+    const isConfigProp = checkConfigProp({
+      elemIndexRoute: curElemIndex,
+      propIndexRoute: indexRoute,
+      propType: parentType,
+      jsonKey,
+    });
+    return isConfigProp;
+  };
+
   render() {
-    const { jsonKey, nodeKey, targetJsonSchema } = this.props;
+    const { jsonKey, curElemIndex, targetJsonSchema, indexRoute } = this.props;
     const currentFormat = getCurrentFormat(targetJsonSchema);
     const isFirstSchema = isFirstSchemaData(currentFormat) || false; // 是否是最外层的schema元素
     const readOnly = false; // 默认只读
+    const isConfigProp = this.checkConfigProp();
+    // 获取唯一id
+    const nodeKey = `${curElemIndex}-${indexRoute}-${indexRoute}`;
 
     return (
       <>
         {targetJsonSchema && (
-          <div className="base-schema-box" id={nodeKey}>
+          <div className="base-schema-box" id={nodeKey} key={nodeKey}>
             <div className="key-input-item">
               <Input value={jsonKey || 'key值不存在'} disabled={readOnly} />
             </div>
@@ -84,7 +118,12 @@ class BaseFormSchema extends React.PureComponent {
             <div className="operate-item">
               {!isFirstSchema && (
                 <Tooltip title="设置为可配置项（静态参数转为动态参数）">
-                  <Checkbox onChange={this.setProp2configZProps}>
+                  <Checkbox
+                    id={nodeKey}
+                    key={nodeKey}
+                    onChange={this.setProp2configZProps}
+                    defaultChecked={isConfigProp}
+                  >
                     可配置
                   </Checkbox>
                 </Tooltip>
@@ -103,9 +142,10 @@ class BaseFormSchema extends React.PureComponent {
 }
 
 export default inject((stores) => ({
-  curElemIndex: stores.widgetSchemaStore.curElemIndex,
-  curElemDataObj: stores.widgetSchemaStore.curElemDataObj,
-  jsonSchema: stores.widgetSchemaStore.jsonSchema,
-  getSchemaByIndexRoute: stores.widgetSchemaStore.getSchemaByIndexRoute,
-  indexRoute2keyRoute: stores.widgetSchemaStore.indexRoute2keyRoute,
+  curElemIndex: stores.elemSchemaStore.curElemIndex,
+  curElemDataObj: stores.elemSchemaStore.curElemDataObj,
+  jsonSchema: stores.elemSchemaStore.jsonSchema,
+  checkConfigProp: stores.widgetSchemaStore.checkConfigProp,
+  addConfigProp: stores.widgetSchemaStore.addConfigProp,
+  cancelConfigProp: stores.widgetSchemaStore.cancelConfigProp,
 }))(observer(BaseFormSchema));

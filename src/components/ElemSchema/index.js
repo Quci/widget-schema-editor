@@ -116,10 +116,10 @@ class ElemSchema extends React.PureComponent {
 }
 
 export default inject((stores) => ({
-  jsonSchema: stores.widgetSchemaStore.jsonSchema,
-  initCurElemData: stores.widgetSchemaStore.initCurElemData,
-  initJSONSchemaData: stores.widgetSchemaStore.initJSONSchemaData,
-  updateCurElemIndex: stores.widgetSchemaStore.updateCurElemIndex,
-  getSchemaByIndexRoute: stores.widgetSchemaStore.getSchemaByIndexRoute,
-  indexRoute2keyRoute: stores.widgetSchemaStore.indexRoute2keyRoute,
+  jsonSchema: stores.elemSchemaStore.jsonSchema,
+  initCurElemData: stores.elemSchemaStore.initCurElemData,
+  initJSONSchemaData: stores.elemSchemaStore.initJSONSchemaData,
+  updateCurElemIndex: stores.elemSchemaStore.updateCurElemIndex,
+  getSchemaByIndexRoute: stores.elemSchemaStore.getSchemaByIndexRoute,
+  indexRoute2keyRoute: stores.elemSchemaStore.indexRoute2keyRoute,
 }))(observer(ElemSchema));

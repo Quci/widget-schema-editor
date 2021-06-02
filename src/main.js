@@ -14,12 +14,17 @@ export default class WidgetSchemaEditor extends React.PureComponent {
     currentWidgetLayout: PropTypes.any,
     currentActiveIndex: PropTypes.string,
     updateCurrentActiveIndex: PropTypes.func,
+    widgetSchema: PropTypes.object,
+    mockData: PropTypes.object,
     onChange: PropTypes.func,
   };
 
   render() {
     const renderContent = (
-      <Provider widgetSchemaStore={JSONStore.widgetSchemaStore}>
+      <Provider
+        widgetSchemaStore={JSONStore.widgetSchemaStore}
+        elemSchemaStore={JSONStore.elemSchemaStore}
+      >
         <UIWidgetSchema {...this.props} />
       </Provider>
     );

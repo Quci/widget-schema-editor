@@ -12096,8 +12096,8 @@ class IndexDemo extends React.PureComponent {
         },
       ], // 用于组件配置的schema
       currentActiveIndex: '',
-      jsonSchema: {},
-      jsonData: {},
+      widgetSchema: {},
+      mockData: {},
       dynamicDataList: [
         {
           id: 3,
@@ -12174,14 +12174,15 @@ class IndexDemo extends React.PureComponent {
     const {
       widgetLayout,
       currentActiveIndex,
-      jsonSchema,
-      jsonData,
+      widgetSchema,
+      mockData,
       dynamicDataList,
       wideScreen,
       schemaCodeView,
       jsonView,
       viewStyle,
     } = this.state;
+
     return (
       <>
         <div className="title-container">
@@ -12255,9 +12256,11 @@ class IndexDemo extends React.PureComponent {
                 currentWidgetLayout={widgetLayout}
                 currentActiveIndex={currentActiveIndex}
                 updateCurrentActiveIndex={this.updateCurrentActiveIndex}
-                onChange={(newJsonSchema) => {
+                widgetSchema={widgetSchema}
+                mockData={mockData}
+                onChange={(newWidgetSchema) => {
                   this.setState({
-                    jsonSchema: newJsonSchema,
+                    widgetSchema: newWidgetSchema,
                   });
                 }}
               />
@@ -12265,7 +12268,7 @@ class IndexDemo extends React.PureComponent {
             {schemaCodeView && (
               <AceEditor
                 id="json_area_ace"
-                value={JSON.stringify(jsonSchema, null, 2)}
+                value={JSON.stringify(widgetLayout, null, 2)}
                 className="json-view-ace"
                 mode="json"
                 theme="solarized_light"
@@ -12293,13 +12296,13 @@ class IndexDemo extends React.PureComponent {
               viewStyle={viewStyle}
               jsonView={jsonView} // code模式
               wideScreen={wideScreen} // 宽屏和小屏的配置项
-              schemaData={jsonSchema}
-              jsonData={jsonData}
+              schemaData={widgetSchema}
+              jsonData={mockData}
               dynamicDataList={dynamicDataList}
               onChange={(newJsonData) => {
                 console.log('jsonDataChange', newJsonData);
                 this.setState({
-                  jsonData: newJsonData,
+                  mockData: newJsonData,
                 });
               }}
             />
@@ -12312,7 +12315,7 @@ class IndexDemo extends React.PureComponent {
 
 ReactDOM.render(
   <div>
-    <h1 className="demoTitle">WidgetSchema Demo</h1>
+    <h1 className="demoTitle">组件模型设置（添加配置项）Demo</h1>
 
     <br />
 

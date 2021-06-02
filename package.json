@@ -33,10 +33,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+http://git@github.com:wibetter/widget-schema-editor.git"
+    "url": "git+http://git@github.com:widget-editor/widget-schema-editor.git"
   },
   "bugs": {
-    "url": "https://github.com/wibetter/widget-schema-editor/issues"
+    "url": "https://github.com/widget-editor/widget-schema-editor/issues"
   },
   "dependencies": {
     "@ant-design/icons": "4.0.0",

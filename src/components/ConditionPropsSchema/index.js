@@ -48,5 +48,5 @@ const ConditionPropsSchema = (props) => {
 };
 
 export default inject((stores) => ({
-  jsonSchema: stores.widgetSchemaStore.jsonSchema,
+  jsonSchema: stores.elemSchemaStore.jsonSchema,
 }))(observer(ConditionPropsSchema));

@@ -36,7 +36,7 @@
 /* 通用滚动样式 */
 .scroll-ability {
   scroll-behavior: smooth;
-  height: 100%;
+  height: auto;
   max-height: 600px;
   overflow: auto;
 }

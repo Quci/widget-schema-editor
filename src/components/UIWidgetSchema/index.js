@@ -26,6 +26,8 @@ class UIWidgetSchema extends React.PureComponent {
     currentWidgetLayout: PropTypes.any,
     currentActiveIndex: PropTypes.string,
     updateCurrentActiveIndex: PropTypes.func,
+    widgetSchema: PropTypes.object,
+    mockData: PropTypes.object,
     onChange: PropTypes.func,
   };
 
@@ -40,11 +42,18 @@ class UIWidgetSchema extends React.PureComponent {
       elemSchemaVisible: false, // 是否显示当前元素模型设置面板
     };
 
+    // 记录当前组件模型数据
+    if (props.widgetSchema) {
+      this.props.initWidgetSchema(props.widgetSchema);
+    }
+    // 记录当前组件配置数据
+    if (props.mockData) {
+      this.props.initCurMockData(props.mockData);
+    }
     // 记录onChange事件
     if (props.onChange) {
       this.props.initOnChange(props.onChange);
     }
-
     // 这边绑定是必要的，这样 `this` 才能在回调函数中使用
     this.closeElemSchema = this.closeElemSchema.bind(this);
   }
@@ -77,6 +86,14 @@ class UIWidgetSchema extends React.PureComponent {
       }
     }
 
+    // 记录当前组件模型数据
+    if (!isEqual(nextProps.widgetSchema, this.props.widgetSchema)) {
+      this.props.initWidgetSchema(nextProps.widgetSchema);
+    }
+    // 记录当前组件配置数据
+    if (!isEqual(nextProps.mockData, this.props.mockData)) {
+      this.props.initCurMockData(nextProps.mockData);
+    }
     // 记录onChange事件
     if (!isEqual(nextProps.onChange, this.props.onChange)) {
       this.props.initOnChange(nextProps.onChange);
@@ -358,28 +375,32 @@ class UIWidgetSchema extends React.PureComponent {
           )}
         </div>
         {/* 为当前组件添加可配置项 */}
-        <Modal
-          title={
-            curSchemaData && curSchemaData.title
-              ? `${curSchemaData.title}（添加配置项）`
-              : `添加配置项`
-          }
-          width={700}
-          visible={elemSchemaVisible}
-          onCancel={this.closeElemSchema}
-          onOk={this.closeElemSchema}
-        >
-          <ElemSchema
-            curElemIndex={curElemIndex}
-            curElemData={curElemData}
-            curSchemaData={curSchemaData}
-          />
-        </Modal>
+        {elemSchemaVisible && (
+          <Modal
+            title={
+              curSchemaData && curSchemaData.title
+                ? `${curSchemaData.title}（添加配置项）`
+                : `添加配置项`
+            }
+            width={700}
+            visible={elemSchemaVisible}
+            onCancel={this.closeElemSchema}
+            onOk={this.closeElemSchema}
+          >
+            <ElemSchema
+              curElemIndex={curElemIndex}
+              curElemData={curElemData}
+              curSchemaData={curSchemaData}
+            />
+          </Modal>
+        )}
       </div>
     );
   }
 }
 
 export default inject((stores) => ({
+  initWidgetSchema: stores.widgetSchemaStore.initWidgetSchema,
+  initCurMockData: stores.widgetSchemaStore.initCurMockData,
   initOnChange: stores.widgetSchemaStore.initOnChange,
 }))(observer(UIWidgetSchema));
