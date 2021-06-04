@@ -1,10 +1,8 @@
 import { observable, computed, action, toJS } from 'mobx';
 import { isEqual, objClone } from '$utils/index';
 import {
-  isNewSchemaData,
   getSchemaByIndexRoute,
   getSchemaByKeyRoute,
-  oldSchemaToNewSchema,
   indexRoute2keyRoute,
   getJsonDataByKeyRoute,
   isString,
