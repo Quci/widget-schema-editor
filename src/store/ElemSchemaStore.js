@@ -56,7 +56,7 @@ export default class ElemSchemaStore {
   /**
    * 记录当前元素在widgetLayout中的位置
    */
-  @observable curElemIndex = '';
+  @observable elemIndexRoute = '';
 
   /**
    * curElemData: 当前元素在widgetLayout中记录的数据对象（type、title、class、data等）
@@ -85,8 +85,8 @@ export default class ElemSchemaStore {
   }
 
   @action.bound
-  updateCurElemIndex(curElemIndex) {
-    this.curElemIndex = curElemIndex;
+  updateCurElemIndex(elemIndexRoute) {
+    this.elemIndexRoute = elemIndexRoute;
   }
 
   @action.bound

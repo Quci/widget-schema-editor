@@ -12259,6 +12259,7 @@ class IndexDemo extends React.PureComponent {
                 widgetSchema={widgetSchema}
                 mockData={mockData}
                 onChange={(newWidgetSchema) => {
+                  console.log('schemaDataChange', newWidgetSchema);
                   this.setState({
                     widgetSchema: newWidgetSchema,
                   });

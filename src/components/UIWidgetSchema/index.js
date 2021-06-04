@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { Tooltip, Tree, Modal } from 'antd';
+import { Tooltip, Tree, Modal, Badge } from 'antd';
 const { TreeNode } = Tree;
 import { FormOutlined } from '@ant-design/icons';
 import { AntdUISchema, BoxSchemaList } from '@wibetter/ui-schema-editor';
@@ -36,7 +36,7 @@ class UIWidgetSchema extends React.PureComponent {
 
     this.state = {
       defaultSelectedKeys: [], // 楼层导航默认选中的项
-      curElemIndex: '', // 记录当前元素在widgetLayout中的位置
+      elemIndexRoute: '', // 记录当前元素在widgetLayout中的位置
       curElemData: {}, // 记录当前元素在widgetLayout中存放的数据对象
       curSchemaData: {}, // 记录当前元素Schema数据
       elemSchemaVisible: false, // 是否显示当前元素模型设置面板
@@ -122,7 +122,7 @@ class UIWidgetSchema extends React.PureComponent {
     if (curElem && curElem.data && curElem.data.schema) {
       // 当前Schema在widgetLayout中
       this.setState({
-        curElemIndex: currentIndex,
+        elemIndexRoute: currentIndex,
         curElemData: curElem,
         curSchemaData: curElem.data.schema,
         elemSchemaVisible: true,
@@ -150,7 +150,7 @@ class UIWidgetSchema extends React.PureComponent {
         curElemSchema = AntdUISchema[`${curElem.name}Schema`] || {};
       }
       this.setState({
-        curElemIndex: currentIndex,
+        elemIndexRoute: currentIndex,
         curElemData: curElem,
         curSchemaData: curElemSchema,
         elemSchemaVisible: true,
@@ -162,12 +162,25 @@ class UIWidgetSchema extends React.PureComponent {
    * 各级元素Title和编辑配置项icon
    */
   elemTitleSchema = (title, currentIndex) => {
+    const hasConfigProp = this.props.checkHasConfigProp(currentIndex);
+    let configPropCount = 0;
+    if (hasConfigProp) {
+      configPropCount = this.props.checkConfigPropCount(currentIndex);
+    }
+
     return (
       <div className="layout-item-cont">
         <div className="layout-item-title" title={title}>
           {title}
         </div>
         <div className="layout-item-icon">
+          <div className="icon-add-schema">
+            {hasConfigProp && (
+              <Tooltip title={`当前元素有${configPropCount}个可配置项`}>
+                <Badge count={configPropCount} size={'small'} />
+              </Tooltip>
+            )}
+          </div>
           <div
             className="icon-add-schema"
             onClick={(event) => {
@@ -348,7 +361,7 @@ class UIWidgetSchema extends React.PureComponent {
 
   render() {
     const { currentWidgetLayout } = this.props;
-    const { curElemIndex, curElemData, curSchemaData, elemSchemaVisible } =
+    const { elemIndexRoute, curElemData, curSchemaData, elemSchemaVisible } =
       this.state;
 
     return (
@@ -388,7 +401,7 @@ class UIWidgetSchema extends React.PureComponent {
             onOk={this.closeElemSchema}
           >
             <ElemSchema
-              curElemIndex={curElemIndex}
+              elemIndexRoute={elemIndexRoute}
               curElemData={curElemData}
               curSchemaData={curSchemaData}
             />
@@ -403,4 +416,6 @@ export default inject((stores) => ({
   initWidgetSchema: stores.widgetSchemaStore.initWidgetSchema,
   initCurMockData: stores.widgetSchemaStore.initCurMockData,
   initOnChange: stores.widgetSchemaStore.initOnChange,
+  checkHasConfigProp: stores.widgetSchemaStore.checkHasConfigProp,
+  checkConfigPropCount: stores.widgetSchemaStore.checkConfigPropCount,
 }))(observer(UIWidgetSchema));

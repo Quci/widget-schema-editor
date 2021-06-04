@@ -23,7 +23,7 @@ class BaseFormSchema extends React.PureComponent {
   }
 
   /** 将当前字段设置为可配置项
-   * curElemIndex：当前元素在widgetLayout中的索引路径值
+   * elemIndexRoute：当前元素在widgetLayout中的索引路径值
    * curElemDataObj：当前元素在widgetLayout中存放的数据
    * jsonSchema：当前元素Schema数据
    * indexRoute：当前字段在jsonSchema中的索引路径值
@@ -35,27 +35,37 @@ class BaseFormSchema extends React.PureComponent {
     const { addConfigProp, cancelConfigProp } = this.props;
     if (checked) {
       // 将当前字段设置为可配置项
-      const { curElemIndex, curElemDataObj, jsonSchema } = this.props; // 当前字段相关数据
+      const { elemIndexRoute, curElemDataObj, jsonSchema } = this.props; // 当前字段相关数据
       const { parentType, indexRoute, jsonKey, targetJsonSchema } = this.props; // 当前字段相关数据
       const elemJsonSchema = toJS(jsonSchema); // 当前元件Schema
       const propJsonSchema = toJS(targetJsonSchema); // 当前字段schema
 
       // 待开发
-      console.log(curElemIndex);
       console.log(curElemDataObj);
       console.log(elemJsonSchema);
 
-      console.log(parentType);
-      console.log(indexRoute);
-      console.log(jsonKey);
       console.log(propJsonSchema);
+      console.log(propJsonSchema.description);
 
-      // 在字段Schema中记录原始路径值
-      propJsonSchema['curElemIndex'] = curElemIndex;
-      propJsonSchema['indexRoute'] = indexRoute;
+      // 1.增加"动态参数"标识
+      propJsonSchema.isDynamicParam = true;
+      // 2.在字段Schema中记录原始路径值
+      propJsonSchema['elemIndexRoute'] = elemIndexRoute;
+      propJsonSchema['propIndexRoute'] = indexRoute;
+      // 3.在描述字段中增加元素标识
+      if (propJsonSchema.description) {
+        propJsonSchema[
+          'description'
+        ] = `${elemJsonSchema.title}-${propJsonSchema.title}：${propJsonSchema.description}`;
+      } else {
+        propJsonSchema[
+          'description'
+        ] = `${elemJsonSchema.title}-${propJsonSchema.title}`;
+      }
+      // 4.设置默认值
 
       addConfigProp({
-        elemIndexRoute: curElemIndex,
+        elemIndexRoute: elemIndexRoute,
         propIndexRoute: indexRoute,
         propType: parentType,
         jsonKey,
@@ -63,13 +73,9 @@ class BaseFormSchema extends React.PureComponent {
       });
     } else {
       // 取消当前字段为可配置项
-      const { parentType, curElemIndex, indexRoute, jsonKey } = this.props;
-      console.log(curElemIndex);
-      console.log(indexRoute);
-      console.log(jsonKey);
-
+      const { parentType, elemIndexRoute, indexRoute, jsonKey } = this.props;
       cancelConfigProp({
-        elemIndexRoute: curElemIndex,
+        elemIndexRoute: elemIndexRoute,
         propIndexRoute: indexRoute,
         propType: parentType,
         jsonKey,
@@ -80,10 +86,10 @@ class BaseFormSchema extends React.PureComponent {
   /** 检查当前字段是否可配置 */
   checkConfigProp = () => {
     const { checkConfigProp } = this.props;
-    const { parentType, curElemIndex, indexRoute, jsonKey } = this.props;
+    const { parentType, elemIndexRoute, indexRoute, jsonKey } = this.props;
 
     const isConfigProp = checkConfigProp({
-      elemIndexRoute: curElemIndex,
+      elemIndexRoute: elemIndexRoute,
       propIndexRoute: indexRoute,
       propType: parentType,
       jsonKey,
@@ -92,13 +98,14 @@ class BaseFormSchema extends React.PureComponent {
   };
 
   render() {
-    const { jsonKey, curElemIndex, targetJsonSchema, indexRoute } = this.props;
+    const { jsonKey, elemIndexRoute, targetJsonSchema, indexRoute } =
+      this.props;
     const currentFormat = getCurrentFormat(targetJsonSchema);
     const isFirstSchema = isFirstSchemaData(currentFormat) || false; // 是否是最外层的schema元素
     const readOnly = false; // 默认只读
     const isConfigProp = this.checkConfigProp();
     // 获取唯一id
-    const nodeKey = `${curElemIndex}-${indexRoute}-${indexRoute}`;
+    const nodeKey = `${elemIndexRoute}-${indexRoute}-${indexRoute}`;
 
     return (
       <>
@@ -146,7 +153,7 @@ class BaseFormSchema extends React.PureComponent {
 }
 
 export default inject((stores) => ({
-  curElemIndex: stores.elemSchemaStore.curElemIndex,
+  elemIndexRoute: stores.elemSchemaStore.elemIndexRoute,
   curElemDataObj: stores.elemSchemaStore.curElemDataObj,
   jsonSchema: stores.elemSchemaStore.jsonSchema,
   checkConfigProp: stores.widgetSchemaStore.checkConfigProp,

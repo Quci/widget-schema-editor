@@ -11,15 +11,15 @@ import './index.scss';
 
 class ElemSchema extends React.PureComponent {
   static propTypes = {
-    curElemIndex: PropTypes.string,
+    elemIndexRoute: PropTypes.string,
     curElemData: PropTypes.object,
     curSchemaData: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
-    if (props.curElemIndex) {
-      this.props.updateCurElemIndex(props.curElemIndex);
+    if (props.elemIndexRoute) {
+      this.props.updateCurElemIndex(props.elemIndexRoute);
     }
     if (props.curElemData) {
       this.props.initCurElemData(props.curElemData);
@@ -31,8 +31,8 @@ class ElemSchema extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(nextProps.curElemIndex, this.props.curElemIndex)) {
-      this.props.updateCurElemIndex(nextProps.curElemIndex);
+    if (!isEqual(nextProps.elemIndexRoute, this.props.elemIndexRoute)) {
+      this.props.updateCurElemIndex(nextProps.elemIndexRoute);
     }
     if (!isEqual(nextProps.curElemData, this.props.curElemData)) {
       this.props.initCurElemData(nextProps.curElemData);

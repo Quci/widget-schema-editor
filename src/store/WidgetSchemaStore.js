@@ -143,7 +143,7 @@ export default class WidgetSchemaStore {
    * 以下用于设置可配置项的相关代码
    */
 
-  /** 根据key值路径(keyRoute)判断是否为可配置字段 */
+  /** 判断是否为可配置字段 */
   @action.bound
   checkConfigProp(configProp) {
     let isConfigProp = false; // 是否可配置
@@ -162,6 +162,72 @@ export default class WidgetSchemaStore {
     return isConfigProp;
   }
 
+  /** 判断是否有可配置字段 */
+  @action.bound
+  checkHasConfigProp(curElemIndexRoute) {
+    let hasConfigProp = false; // 是否有可配置字段
+    if (!curElemIndexRoute) return hasConfigProp;
+    // 1.生成propKey
+    const elemIndexRoute = `__${curElemIndexRoute.replaceAll('-', 'x')}_`;
+    // 先判断style中是否有对应的配置项
+    hasConfigProp =
+      this.widgetSchema.properties['style'].propertyOrder
+        .join(',')
+        .indexOf(elemIndexRoute) > -1
+        ? true
+        : false;
+    if (!hasConfigProp) {
+      // 判断func中是否有对应的配置项
+      hasConfigProp =
+        this.widgetSchema.properties['func'].propertyOrder
+          .join(',')
+          .indexOf(elemIndexRoute) > -1
+          ? true
+          : false;
+    }
+    if (!hasConfigProp) {
+      // 判断data中是否有对应的配置项
+      hasConfigProp =
+        this.widgetSchema.properties['data'].propertyOrder
+          .join(',')
+          .indexOf(elemIndexRoute) > -1
+          ? true
+          : false;
+    }
+    return hasConfigProp;
+  }
+
+  /** 检查有多少可配置字段 */
+  @action.bound
+  checkConfigPropCount(curElemIndexRoute) {
+    let configPropCount = 0;
+    if (!curElemIndexRoute) return configPropCount;
+    // 1.生成propKey
+    const elemIndexRoute = `__${curElemIndexRoute.replaceAll('-', 'x')}_`;
+    // 检查style中有多少对应的配置项
+    const styleProps = this.widgetSchema.properties[
+      'style'
+    ].propertyOrder.filter((keyItem) => keyItem.indexOf(elemIndexRoute) > -1);
+    if (styleProps && styleProps.length) {
+      configPropCount += styleProps.length;
+    }
+    // 检查func中有多少对应的配置项
+    const funcProps = this.widgetSchema.properties['func'].propertyOrder.filter(
+      (keyItem) => keyItem.indexOf(elemIndexRoute) > -1,
+    );
+    if (funcProps && funcProps.length) {
+      configPropCount += funcProps.length;
+    }
+    // 检查data中有多少对应的配置项
+    const dataProps = this.widgetSchema.properties['data'].propertyOrder.filter(
+      (keyItem) => keyItem.indexOf(elemIndexRoute) > -1,
+    );
+    if (dataProps && dataProps.length) {
+      configPropCount += dataProps.length;
+    }
+    return configPropCount;
+  }
+
   /**
    * 设置为可配置字段
    * */
@@ -170,7 +236,7 @@ export default class WidgetSchemaStore {
     // 1.生成propKey
     const propKey = `${
       configProp.jsonKey
-    }_${configProp.elemIndexRoute.replaceAll(
+    }__${configProp.elemIndexRoute.replaceAll(
       '-',
       'x',
     )}_${configProp.propIndexRoute.replaceAll('-', 'x')}`;
@@ -193,7 +259,7 @@ export default class WidgetSchemaStore {
     // 1.生成propKey
     const propKey = `${
       configProp.jsonKey
-    }_${configProp.elemIndexRoute.replaceAll(
+    }__${configProp.elemIndexRoute.replaceAll(
       '-',
       'x',
     )}_${configProp.propIndexRoute.replaceAll('-', 'x')}`;
