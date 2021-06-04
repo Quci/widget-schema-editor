@@ -3,6 +3,8 @@ import { Provider } from 'mobx-react';
 import PropTypes from 'prop-types';
 import JSONStore from '$store/index';
 import UIWidgetSchema from '$components/UIWidgetSchema';
+// 输出方法widgetSchema2mockData：生成mockData
+export { widgetSchema2mockData } from '$utils/index';
 
 /**
  * WidgetSchemaEditor功能组件

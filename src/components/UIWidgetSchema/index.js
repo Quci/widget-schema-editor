@@ -42,6 +42,10 @@ class UIWidgetSchema extends React.PureComponent {
       elemSchemaVisible: false, // 是否显示当前元素模型设置面板
     };
 
+    // 记录当前组件内容数据
+    if (props.currentWidgetLayout) {
+      this.props.initWidgetLayout(props.currentWidgetLayout);
+    }
     // 记录当前组件模型数据
     if (props.widgetSchema) {
       this.props.initWidgetSchema(props.widgetSchema);
@@ -86,6 +90,12 @@ class UIWidgetSchema extends React.PureComponent {
       }
     }
 
+    // 记录当前组件内容数据
+    if (
+      !isEqual(nextProps.currentWidgetLayout, this.props.currentWidgetLayout)
+    ) {
+      this.props.initWidgetLayout(nextProps.widgetLayout);
+    }
     // 记录当前组件模型数据
     if (!isEqual(nextProps.widgetSchema, this.props.widgetSchema)) {
       this.props.initWidgetSchema(nextProps.widgetSchema);
@@ -177,7 +187,8 @@ class UIWidgetSchema extends React.PureComponent {
           <div className="icon-add-schema">
             {hasConfigProp && (
               <Tooltip title={`当前元素有${configPropCount}个可配置项`}>
-                <Badge count={configPropCount} size={'small'} />
+                <Badge count={configPropCount} size={'small'} />{' '}
+                {/*color='#2c63ff'*/}
               </Tooltip>
             )}
           </div>
@@ -413,6 +424,7 @@ class UIWidgetSchema extends React.PureComponent {
 }
 
 export default inject((stores) => ({
+  initWidgetLayout: stores.widgetSchemaStore.initWidgetLayout,
   initWidgetSchema: stores.widgetSchemaStore.initWidgetSchema,
   initCurMockData: stores.widgetSchemaStore.initCurMockData,
   initOnChange: stores.widgetSchemaStore.initOnChange,

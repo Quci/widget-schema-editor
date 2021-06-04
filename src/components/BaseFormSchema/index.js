@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Checkbox, Input, Select, Tooltip } from 'antd';
 const { Option } = Select;
 import { getCurrentFormat, isFirstSchemaData } from '@wibetter/json-utils';
+// import { getPropValueByPropIndex } from '$utils/index';
 import './index.scss';
 
 class BaseFormSchema extends React.PureComponent {
@@ -35,18 +36,17 @@ class BaseFormSchema extends React.PureComponent {
     const { addConfigProp, cancelConfigProp } = this.props;
     if (checked) {
       // 将当前字段设置为可配置项
-      const { elemIndexRoute, curElemDataObj, jsonSchema } = this.props; // 当前字段相关数据
+      const {
+        widgetLayoutObj,
+        elemIndexRoute,
+        jsonSchema,
+        getPropValueByPropIndex,
+      } = this.props; // 当前字段相关数据
       const { parentType, indexRoute, jsonKey, targetJsonSchema } = this.props; // 当前字段相关数据
       const elemJsonSchema = toJS(jsonSchema); // 当前元件Schema
       const propJsonSchema = toJS(targetJsonSchema); // 当前字段schema
-
-      // 待开发
-      console.log(curElemDataObj);
-      console.log(elemJsonSchema);
-
-      console.log(propJsonSchema);
-      console.log(propJsonSchema.description);
-
+      // 获取当前字段的配置数值
+      const curPropValue = getPropValueByPropIndex(indexRoute, widgetLayoutObj);
       // 1.增加"动态参数"标识
       propJsonSchema.isDynamicParam = true;
       // 2.在字段Schema中记录原始路径值
@@ -63,7 +63,8 @@ class BaseFormSchema extends React.PureComponent {
         ] = `${elemJsonSchema.title}-${propJsonSchema.title}`;
       }
       // 4.设置默认值
-
+      propJsonSchema['default'] = curPropValue;
+      // 5.添加可配置字段
       addConfigProp({
         elemIndexRoute: elemIndexRoute,
         propIndexRoute: indexRoute,
@@ -156,6 +157,8 @@ export default inject((stores) => ({
   elemIndexRoute: stores.elemSchemaStore.elemIndexRoute,
   curElemDataObj: stores.elemSchemaStore.curElemDataObj,
   jsonSchema: stores.elemSchemaStore.jsonSchema,
+  getPropValueByPropIndex: stores.elemSchemaStore.getPropValueByPropIndex,
+  widgetLayoutObj: stores.widgetSchemaStore.widgetLayoutObj,
   checkConfigProp: stores.widgetSchemaStore.checkConfigProp,
   addConfigProp: stores.widgetSchemaStore.addConfigProp,
   cancelConfigProp: stores.widgetSchemaStore.cancelConfigProp,
