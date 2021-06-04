@@ -6,7 +6,10 @@ import {
   getSchemaByKeyRoute,
   oldSchemaToNewSchema,
   indexRoute2keyRoute,
+  getJsonDataByKeyRoute,
+  isString,
 } from '@wibetter/json-utils';
+import { getElemByActiveIndex } from '../utils';
 
 const initJSONSchemaData = {
   type: 'object',
@@ -94,7 +97,11 @@ export default class ElemSchemaStore {
     if (!curElemData || JSON.stringify(curElemData) === '{}') {
       this.curElemData = {}; // 重置为空
     } else if (!isEqual(curElemData, this.curElemDataObj)) {
-      this.curElemData = curElemData;
+      if (isString(curElemData)) {
+        this.curElemData = JSON.parse(curElemData);
+      } else {
+        this.curElemData = curElemData;
+      }
     }
   }
 
@@ -104,21 +111,19 @@ export default class ElemSchemaStore {
       // 使用默认的jsonschema数据进行初始化
       this.jsonSchema = objClone(initJSONSchemaData);
     } else if (!isEqual(jsonSchemaData, this.JSONSchemaObj)) {
-      if (jsonSchemaData && isNewSchemaData(jsonSchemaData)) {
-        // 如果有lastUpdateTime则说明是新版jsonSchema数据，无需转换直接进行赋值
-        this.jsonSchema = jsonSchemaData;
+      if (isString(jsonSchemaData)) {
+        this.jsonSchema = JSON.parse(jsonSchemaData);
       } else {
-        // 进行一次转换，以便兼容旧版数据
-        const newJSONSchema = oldSchemaToNewSchema(jsonSchemaData);
-        this.jsonSchema = newJSONSchema;
+        this.jsonSchema = jsonSchemaData;
       }
     }
   }
 
   /** 根据索引路径获取对应的key值路径 */
   @action.bound
-  indexRoute2keyRoute(indexRoute) {
-    return indexRoute2keyRoute(indexRoute, this.jsonSchema);
+  indexRoute2keyRoute(indexRoute, _curJsonSchema) {
+    const curJsonSchema = _curJsonSchema || this.jsonSchema;
+    return indexRoute2keyRoute(indexRoute, curJsonSchema);
   }
 
   /** 根据索引路径获取对应的schema数据[非联动式数据获取]  */
@@ -131,5 +136,38 @@ export default class ElemSchemaStore {
   @action.bound
   getSchemaByKeyRoute(keyRoute) {
     return getSchemaByKeyRoute(keyRoute, this.jsonSchema, true); // useObjClone: true 避免后续产生数据联动
+  }
+
+  /** 根据指定位置从currentWidgetLayout获取指定对象数据  */
+  @action.bound
+  getPropValueByPropIndex(propIndexRoute, currentWidgetLayout) {
+    // 1. 先获取当前元素对象数据
+    const curElem = getElemByActiveIndex(
+      this.elemIndexRoute,
+      currentWidgetLayout,
+    );
+    // 2. 获取当前元素的mockData
+    let elemMockData = {};
+    if (
+      curElem.type === 'container' ||
+      curElem.type === 'row' ||
+      curElem.type === 'column'
+    ) {
+      // 容器元素
+      elemMockData = {
+        style: curElem.style || {},
+      };
+    } else if (curElem.type === 'ui-materiel') {
+      // 元件
+      elemMockData =
+        curElem.data && curElem.data.mockData
+          ? JSON.parse(curElem.data.mockData)
+          : {};
+    }
+    // 3. 获取当前元素的propKeyRoute
+    const propKeyRoute = this.indexRoute2keyRoute(propIndexRoute);
+    // 4. 根据propKeyRoute获取对应的配置数值
+    const curPropValue = getJsonDataByKeyRoute(propKeyRoute, elemMockData);
+    return curPropValue;
   }
 }

@@ -12258,7 +12258,7 @@ class IndexDemo extends React.PureComponent {
                 updateCurrentActiveIndex={this.updateCurrentActiveIndex}
                 widgetSchema={widgetSchema}
                 mockData={mockData}
-                onChange={(newWidgetSchema) => {
+                onChange={(newWidgetSchema, newMockData) => {
                   console.log('schemaDataChange', newWidgetSchema);
                   this.setState({
                     widgetSchema: newWidgetSchema,

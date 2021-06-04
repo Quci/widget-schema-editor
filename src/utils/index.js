@@ -1,3 +1,5 @@
+import { AntdUISchema, BoxSchemaList } from '@wibetter/ui-schema-editor';
+
 /** js对象数据深拷贝，避免数据联动 */
 export function objClone(targetObj) {
   const newObj = JSON.stringify(targetObj);
@@ -220,4 +222,40 @@ export function getElemByActiveIndex(currentActiveIndex, currentWidgetLayout) {
     }
   }
   return currentElem;
+}
+
+/**
+ * 根据指定位置从currentWidgetLayout获取指定对象数据
+ */
+export function getPropValueByPropIndex(
+  elemIndexRoute,
+  propIndexRoute,
+  currentWidgetLayout,
+) {
+  let curPropValue;
+  // 1. 先获取当前元素对象数据
+  const curElem = getElemByActiveIndex(elemIndexRoute, currentWidgetLayout);
+  // 2. 获取当前元素的SchemaData
+  let curElemSchema = {};
+  if (curElemData.type === 'container') {
+    // 块级容器元素
+    if (curElem.elemName === '固定布局') {
+      // 固定定位块级容器元素
+      curElemSchema = BoxSchemaList['container'] || {};
+    } else if (curElem.elemName === '绝对布局') {
+      // 绝对定位块级容器元素
+      curElemSchema = BoxSchemaList['container'] || {};
+    } else {
+      // 普通块级容器元素
+      curElemSchema = BoxSchemaList['container'] || {};
+    }
+  } else if (curElem.type === 'row' || curElem.type === 'column') {
+    // 行级和列级容器元素
+    curElemSchema = BoxSchemaList[curElem.type] || {};
+  } else if (curElem.type === 'ui-materiel') {
+    // 基础物料（基础元件和功能元件）
+    curElemSchema = AntdUISchema[`${curElem.name}Schema`] || {};
+  }
+  // 2. 获取当前元素的mockData
+  let elemMockData = {};
 }

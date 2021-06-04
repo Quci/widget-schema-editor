@@ -6,6 +6,7 @@ import {
   getSchemaByIndexRoute,
   getSchemaByKeyRoute,
   indexRoute2keyRoute,
+  isString,
 } from '@wibetter/json-utils';
 
 const initJSONSchemaData = {
@@ -54,6 +55,11 @@ export default class WidgetSchemaStore {
   @observable triggerChange = false;
 
   /**
+   * widgetLayout: 当前组件内容数据
+   */
+  @observable widgetLayout = [];
+
+  /**
    * widgetSchema: 当前组件Schema数据
    */
   @observable widgetSchema = {};
@@ -62,6 +68,10 @@ export default class WidgetSchemaStore {
    * curMockData: 当前元素在widgetLayout中记录的数据对象（type、title、class、data等）
    */
   @observable curMockData = {};
+
+  @computed get widgetLayoutObj() {
+    return toJS(this.widgetLayout);
+  }
 
   @computed get widgetSchemaObj() {
     return toJS(this.widgetSchema);
@@ -85,11 +95,28 @@ export default class WidgetSchemaStore {
   }
 
   @action.bound
+  initWidgetLayout(widgetLayout) {
+    if (!widgetLayout || JSON.stringify(widgetLayout) === '[]') {
+      this.widgetLayout = []; // 重置为空
+    } else if (!isEqual(widgetLayout, this.widgetLayout)) {
+      if (isString(widgetLayout)) {
+        this.widgetLayout = JSON.parse(widgetLayout);
+      } else {
+        this.widgetLayout = widgetLayout;
+      }
+    }
+  }
+
+  @action.bound
   initWidgetSchema(widgetSchema) {
     if (!widgetSchema || JSON.stringify(widgetSchema) === '{}') {
       this.widgetSchema = initJSONSchemaData; // 重置为空
     } else if (!isEqual(widgetSchema, this.widgetSchema)) {
-      this.widgetSchema = widgetSchema;
+      if (isString(widgetSchema)) {
+        this.widgetSchema = JSON.parse(widgetSchema);
+      } else {
+        this.widgetSchema = widgetSchema;
+      }
     }
   }
 
@@ -98,7 +125,11 @@ export default class WidgetSchemaStore {
     if (!curMockData || JSON.stringify(curMockData) === '{}') {
       this.curMockData = {}; // 重置为空
     } else if (!isEqual(curMockData, this.curMockData)) {
-      this.curMockData = curMockData;
+      if (isString(curMockData)) {
+        this.curMockData = JSON.parse(curMockData);
+      } else {
+        this.curMockData = curMockData;
+      }
     }
   }
 
