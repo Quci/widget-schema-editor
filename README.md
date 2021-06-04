@@ -34,11 +34,11 @@ class IndexDemo extends React.PureComponent {
 
   render() {
     const {
-          widgetLayout,
-          currentActiveIndex,
-          widgetSchema,
-          mockData,
-        } = this.state;
+      widgetLayout,
+      currentActiveIndex,
+      widgetSchema,
+      mockData,
+    } = this.state;
     return (
       <>
         <div className="json-action-container">
@@ -69,7 +69,7 @@ class IndexDemo extends React.PureComponent {
 | name         | type     | default | desc                            |
 | ------------ | -------- | ------- | ------------------------------- |
 | `currentWidgetLayout`| object   | {}    | 必填项，当前组件内容数据（widgetLayout） |
-| `currentActiveIndex`| object   | {}    | 必填项，当前组件楼层处于选中的元素索引路径值 |
+| `currentActiveIndex`| object   | {}    | 必填项，当前组件楼层处于选中元素的索引路径值 |
 | `updateCurrentActiveIndex`| function   | () => {}      | 必填项，currentActiveIndex更新的回调函数 |
 | `widgetSchema`| object   | {}      | 非必填项，当前组件模型数据 |
 | `mockData`| object   | {}      | 非必填项，当前组件配置数据 |
