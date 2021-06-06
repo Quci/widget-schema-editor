@@ -4,7 +4,7 @@
  * widgetSchema: 组件模型数据
  * widgetLayout: 组件内容数据
  * */
-import { isArray, getPropValueByPropIndex } from '../utils';
+import { isArray, getPropValueByWidgetLayout } from '../utils';
 
 /**
  * Object类型的schema转jsonData
@@ -26,7 +26,7 @@ function objectSchema2mockData(objectSchema, widgetLayout) {
       const propSchema = objectSchema.properties[propKey];
       const propIndexRoute = propSchema.propIndexRoute;
       const elemIndexRoute = propSchema.elemIndexRoute;
-      const propValue = getPropValueByPropIndex(
+      const propValue = getPropValueByWidgetLayout(
         widgetLayout,
         elemIndexRoute,
         propIndexRoute,
@@ -38,7 +38,7 @@ function objectSchema2mockData(objectSchema, widgetLayout) {
 }
 
 /**
- * 遍历widgetSchema从widgetLayout中获取对应的配置数据，组装mockData
+ * 根据widgetSchema从widgetLayout中获取对应的配置数据，生成mockData
  * */
 export function widgetSchema2mockData(widgetSchema, widgetLayout) {
   let curMockData = {};

@@ -230,9 +230,9 @@ export function getElemByActiveIndex(currentActiveIndex, currentWidgetLayout) {
 }
 
 /**
- * 根据指定位置从currentWidgetLayout获取指定对象数据
+ * 根据索引值从currentWidgetLayout获取配置字段的数值
  */
-export function getPropValueByPropIndex(
+export function getPropValueByWidgetLayout(
   currentWidgetLayout,
   elemIndexRoute,
   propIndexRoute,

@@ -138,7 +138,7 @@ export default class ElemSchemaStore {
 
   /** 根据指定位置从currentWidgetLayout获取指定对象数据  */
   @action.bound
-  getPropValueByPropIndex(propIndexRoute, currentWidgetLayout) {
+  getPropValueByWidgetLayout(propIndexRoute, currentWidgetLayout) {
     // 1. 先获取当前元素对象数据
     const curElem = getElemByActiveIndex(
       this.elemIndexRoute,
