@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Checkbox, Input, Select, Tooltip } from 'antd';
 const { Option } = Select;
 import { getCurrentFormat, isFirstSchemaData } from '@wibetter/json-utils';
-// import { getPropValueByPropIndex } from '$utils/index';
+// import { getPropValueByWidgetLayout } from '$utils/index';
 import './index.scss';
 
 class BaseFormSchema extends React.PureComponent {
@@ -40,13 +40,16 @@ class BaseFormSchema extends React.PureComponent {
         widgetLayoutObj,
         elemIndexRoute,
         jsonSchema,
-        getPropValueByPropIndex,
+        getPropValueByWidgetLayout,
       } = this.props; // 当前字段相关数据
       const { parentType, indexRoute, jsonKey, targetJsonSchema } = this.props; // 当前字段相关数据
       const elemJsonSchema = toJS(jsonSchema); // 当前元件Schema
       const propJsonSchema = toJS(targetJsonSchema); // 当前字段schema
       // 获取当前字段的配置数值
-      const curPropValue = getPropValueByPropIndex(indexRoute, widgetLayoutObj);
+      const curPropValue = getPropValueByWidgetLayout(
+        indexRoute,
+        widgetLayoutObj,
+      );
       // 1.增加"动态参数"标识
       propJsonSchema.isDynamicParam = true;
       // 2.在字段Schema中记录原始路径值
@@ -157,7 +160,7 @@ export default inject((stores) => ({
   elemIndexRoute: stores.elemSchemaStore.elemIndexRoute,
   curElemDataObj: stores.elemSchemaStore.curElemDataObj,
   jsonSchema: stores.elemSchemaStore.jsonSchema,
-  getPropValueByPropIndex: stores.elemSchemaStore.getPropValueByPropIndex,
+  getPropValueByWidgetLayout: stores.elemSchemaStore.getPropValueByWidgetLayout,
   widgetLayoutObj: stores.widgetSchemaStore.widgetLayoutObj,
   checkConfigProp: stores.widgetSchemaStore.checkConfigProp,
   addConfigProp: stores.widgetSchemaStore.addConfigProp,

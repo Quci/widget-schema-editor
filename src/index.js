@@ -4,7 +4,7 @@ import { Switch } from 'antd';
 import JSONEditor from '@wibetter/json-editor';
 import WidgetSchemaEditor from './main';
 import AceEditor from 'react-ace';
-import { getMockDataByWidgetLayout } from '$utils/index';
+import { widgetSchema2mockData } from '$utils/index';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/theme-solarized_light'; // ace-builds
 import '@wibetter/json-editor/dist/index.css';
@@ -12189,7 +12189,7 @@ class IndexDemo extends React.PureComponent {
         <div className="title-container">
           <div className="title1-box">
             <p>
-              <b className="title-name">WidgetSchema</b>: UI组件模型设置，
+              <b className="title-name">WidgetSchemaEditor</b>: UI组件模型设置，
             </p>
             <div>
               <b>自定义展示</b>: &nbsp;&nbsp;
@@ -12208,7 +12208,7 @@ class IndexDemo extends React.PureComponent {
           </div>
           <div className={`title2-box ${!wideScreen ? 'mobile-view' : ''}`}>
             <p>
-              <b className="title-name">JSONEditor</b>: 当前可配置项，
+              <b className="title-name">JSONEditor</b>: 当前组件配置面板
             </p>
             <div>
               <b>自定义展示</b>: &nbsp;&nbsp;
@@ -12265,7 +12265,7 @@ class IndexDemo extends React.PureComponent {
                     widgetSchema: newWidgetSchema,
                   });
                   console.log('从widgetLayout中自动获取mockData：');
-                  const newMockData = getMockDataByWidgetLayout(
+                  const newMockData = widgetSchema2mockData(
                     newWidgetSchema,
                     widgetLayout,
                   );
