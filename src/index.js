@@ -12189,7 +12189,7 @@ class IndexDemo extends React.PureComponent {
         <div className="title-container">
           <div className="title1-box">
             <p>
-              <b className="title-name">WidgetSchema</b>: UI组件模型设置，
+              <b className="title-name">WidgetSchemaEditor</b>: UI组件模型设置，
             </p>
             <div>
               <b>自定义展示</b>: &nbsp;&nbsp;
@@ -12208,7 +12208,7 @@ class IndexDemo extends React.PureComponent {
           </div>
           <div className={`title2-box ${!wideScreen ? 'mobile-view' : ''}`}>
             <p>
-              <b className="title-name">JSONEditor</b>: 当前可配置项，
+              <b className="title-name">JSONEditor</b>: 当前组件配置面板
             </p>
             <div>
               <b>自定义展示</b>: &nbsp;&nbsp;
