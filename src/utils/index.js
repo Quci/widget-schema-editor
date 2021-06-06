@@ -1,9 +1,12 @@
-import { AntdUISchema, BoxSchemaList } from '@wibetter/ui-schema-editor';
-import {
-  getJsonDataByKeyRoute,
-  indexRoute2keyRoute,
-} from '@wibetter/json-utils';
-import { widgetSchema2mockData } from './widgetSchema2mockData';
+import { getMockDataByElemData } from './widgetSchema2mockData';
+
+export {
+  getElemByActiveIndex,
+  getElemSchemaByElemData,
+  getMockDataByElemData,
+  getPropValueByWidgetLayout,
+  widgetSchema2mockData,
+} from './widgetSchema2mockData';
 
 /** js对象数据深拷贝，避免数据联动 */
 export function objClone(targetObj) {
@@ -196,98 +199,4 @@ export function isEntityElem(elemType) {
     isEntity = true;
   }
   return isEntity;
-}
-
-/**
- * 根据指定位置从currentWidgetLayout获取指定对象数据
- */
-export function getElemByActiveIndex(currentActiveIndex, currentWidgetLayout) {
-  let currentElem = {};
-  if (
-    currentWidgetLayout &&
-    currentWidgetLayout.length > 0 &&
-    currentActiveIndex
-  ) {
-    const activeIndexArr = currentActiveIndex.split('-');
-    if (activeIndexArr.length === 1) {
-      // 说明选中的是widgetLayout的直接widget-container容器
-      currentElem = currentWidgetLayout[activeIndexArr[0]];
-    } else {
-      currentElem = currentWidgetLayout[activeIndexArr[0]];
-      for (let ind = 1, size = activeIndexArr.length; ind < size; ind++) {
-        const currentIndexTemp = activeIndexArr[ind];
-        if (
-          currentElem &&
-          currentElem.child &&
-          currentElem.child[currentIndexTemp]
-        ) {
-          currentElem = currentElem.child[currentIndexTemp];
-        }
-      }
-    }
-  }
-  return currentElem;
-}
-
-/**
- * 根据索引值从currentWidgetLayout获取配置字段的数值
- */
-export function getPropValueByWidgetLayout(
-  currentWidgetLayout,
-  elemIndexRoute,
-  propIndexRoute,
-) {
-  // 1. 先从widgetLayout中获取当前元素对象数据
-  const curElem = getElemByActiveIndex(elemIndexRoute, currentWidgetLayout);
-  // 2. 获取当前元素的SchemaData
-  let curElemSchema = {};
-  if (curElem.type === 'container') {
-    // 块级容器元素
-    if (curElem.elemName === '固定布局') {
-      // 固定定位块级容器元素
-      curElemSchema = BoxSchemaList['container'] || {};
-    } else if (curElem.elemName === '绝对布局') {
-      // 绝对定位块级容器元素
-      curElemSchema = BoxSchemaList['container'] || {};
-    } else {
-      // 普通块级容器元素
-      curElemSchema = BoxSchemaList['container'] || {};
-    }
-  } else if (curElem.type === 'row' || curElem.type === 'column') {
-    // 行级和列级容器元素
-    curElemSchema = BoxSchemaList[curElem.type] || {};
-  } else if (curElem.type === 'ui-materiel') {
-    // 基础物料（基础元件和功能元件）
-    curElemSchema = AntdUISchema[`${curElem.name}Schema`] || {};
-  }
-  // 3. 获取当前元素的mockData
-  let elemMockData = {};
-  if (
-    curElem.type === 'container' ||
-    curElem.type === 'row' ||
-    curElem.type === 'column'
-  ) {
-    // 容器元素
-    elemMockData = {
-      style: curElem.style || {},
-    };
-  } else if (curElem.type === 'ui-materiel') {
-    // 元件
-    elemMockData =
-      curElem.data && curElem.data.mockData
-        ? JSON.parse(curElem.data.mockData)
-        : {};
-  }
-  // 4. 获取当前元素的propKeyRoute
-  const propKeyRoute = indexRoute2keyRoute(propIndexRoute, curElemSchema);
-  // 5. 根据propKeyRoute获取对应的配置数值
-  const curPropValue = getJsonDataByKeyRoute(propKeyRoute, elemMockData);
-  return curPropValue;
-}
-
-/**
- * 输入最新的widgetLayout和widgetSchema，输出最新的mockData。
- */
-export function getMockDataByWidgetLayout(widgetSchema, currentWidgetLayout) {
-  return widgetSchema2mockData(widgetSchema, currentWidgetLayout);
 }

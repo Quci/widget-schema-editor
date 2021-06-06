@@ -7,7 +7,7 @@ import {
   getJsonDataByKeyRoute,
   isString,
 } from '@wibetter/json-utils';
-import { getElemByActiveIndex } from '../utils';
+import { getElemByActiveIndex, getMockDataByElemData } from '../utils';
 
 const initJSONSchemaData = {
   type: 'object',
@@ -145,23 +145,7 @@ export default class ElemSchemaStore {
       currentWidgetLayout,
     );
     // 2. 获取当前元素的mockData
-    let elemMockData = {};
-    if (
-      curElem.type === 'container' ||
-      curElem.type === 'row' ||
-      curElem.type === 'column'
-    ) {
-      // 容器元素
-      elemMockData = {
-        style: curElem.style || {},
-      };
-    } else if (curElem.type === 'ui-materiel') {
-      // 元件
-      elemMockData =
-        curElem.data && curElem.data.mockData
-          ? JSON.parse(curElem.data.mockData)
-          : {};
-    }
+    const elemMockData = getMockDataByElemData(curElem);
     // 3. 获取当前元素的propKeyRoute
     const propKeyRoute = this.indexRoute2keyRoute(propIndexRoute);
     // 4. 根据propKeyRoute获取对应的配置数值

@@ -4,7 +4,7 @@ import { Switch } from 'antd';
 import JSONEditor from '@wibetter/json-editor';
 import WidgetSchemaEditor from './main';
 import AceEditor from 'react-ace';
-import { getMockDataByWidgetLayout } from '$utils/index';
+import { widgetSchema2mockData } from '$utils/index';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/theme-solarized_light'; // ace-builds
 import '@wibetter/json-editor/dist/index.css';
@@ -12265,7 +12265,7 @@ class IndexDemo extends React.PureComponent {
                     widgetSchema: newWidgetSchema,
                   });
                   console.log('从widgetLayout中自动获取mockData：');
-                  const newMockData = getMockDataByWidgetLayout(
+                  const newMockData = widgetSchema2mockData(
                     newWidgetSchema,
                     widgetLayout,
                   );

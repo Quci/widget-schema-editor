@@ -4,11 +4,11 @@ import { inject, observer } from 'mobx-react';
 import { Tooltip, Tree, Modal, Badge } from 'antd';
 const { TreeNode } = Tree;
 import { FormOutlined } from '@ant-design/icons';
-import { AntdUISchema, BoxSchemaList } from '@wibetter/ui-schema-editor';
 import ElemSchema from '$components/ElemSchema';
 import {
   getElemDefaultName,
   getElemByActiveIndex,
+  getElemSchemaByElemData,
   isSlotElem,
   isEntityElem,
   isEqual,
@@ -139,26 +139,7 @@ class UIWidgetSchema extends React.PureComponent {
       });
     } else if (curElem && curElem.type) {
       // 获取当前元素Schema数据
-      let curElemSchema = {};
-      if (curElem.type === 'container') {
-        // 块级容器元素
-        if (curElem.elemName === '固定布局') {
-          // 固定定位块级容器元素
-          curElemSchema = BoxSchemaList['container'] || {};
-        } else if (curElem.elemName === '绝对布局') {
-          // 绝对定位块级容器元素
-          curElemSchema = BoxSchemaList['container'] || {};
-        } else {
-          // 普通块级容器元素
-          curElemSchema = BoxSchemaList['container'] || {};
-        }
-      } else if (curElem.type === 'row' || curElem.type === 'column') {
-        // 行级和列级容器元素
-        curElemSchema = BoxSchemaList[curElem.type] || {};
-      } else if (curElem.type === 'ui-materiel') {
-        // 基础物料（基础元件和功能元件）
-        curElemSchema = AntdUISchema[`${curElem.name}Schema`] || {};
-      }
+      const curElemSchema = getElemSchemaByElemData(curElem);
       this.setState({
         elemIndexRoute: currentIndex,
         curElemData: curElem,
