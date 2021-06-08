@@ -77,14 +77,7 @@ class ElemSchema extends React.PureComponent {
         {!isEmpty && (
           <>
             <ConditionPropsSchema />
-            <Tree
-              selectable={false}
-              defaultExpandedKeys={
-                currentFormat === 'object' && !isEmpty
-                  ? this.catchExpandedKeys(jsonSchema)
-                  : []
-              }
-            >
+            <Tree selectable={false} defaultExpandAll={true}>
               {currentFormat === 'object' &&
                 ObjectSchema({
                   parentType: '',

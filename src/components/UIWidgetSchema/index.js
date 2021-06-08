@@ -20,7 +20,6 @@ import './index.scss';
  * 左侧操作栏/UI组件楼层导航
  * 备注：可用于查看当前UI组件结构
  */
-
 class UIWidgetSchema extends React.PureComponent {
   static propTypes = {
     currentWidgetLayout: PropTypes.any,

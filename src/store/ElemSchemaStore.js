@@ -4,6 +4,7 @@ import {
   getSchemaByIndexRoute,
   getSchemaByKeyRoute,
   indexRoute2keyRoute,
+  keyRoute2indexRoute,
   getJsonDataByKeyRoute,
   isString,
 } from '@wibetter/json-utils';
@@ -124,6 +125,13 @@ export default class ElemSchemaStore {
     return indexRoute2keyRoute(indexRoute, curJsonSchema);
   }
 
+  /** 根据key值路径获取对应的索引值路径 */
+  @action.bound
+  keyRoute2indexRoute(keyRoute, _curJsonSchema) {
+    const curJsonSchema = _curJsonSchema || this.jsonSchema;
+    return keyRoute2indexRoute(keyRoute, curJsonSchema);
+  }
+
   /** 根据索引路径获取对应的schema数据[非联动式数据获取]  */
   @action.bound
   getSchemaByIndexRoute(indexRoute) {
@@ -136,7 +144,21 @@ export default class ElemSchemaStore {
     return getSchemaByKeyRoute(keyRoute, this.jsonSchema, true); // useObjClone: true 避免后续产生数据联动
   }
 
-  /** 根据指定位置从currentWidgetLayout获取指定对象数据  */
+  /** 根据key值路径(keyRoute)判断是否为条件字段 */
+  @action.bound
+  checkConditionProp(keyRoute) {
+    const conditionProps =
+      this.jsonSchema && this.jsonSchema.conditionProps
+        ? this.jsonSchema.conditionProps
+        : {};
+    let isConditionProp = false;
+    if (conditionProps[keyRoute]) {
+      isConditionProp = true;
+    }
+    return isConditionProp;
+  }
+
+  /** 根据指定位置从currentWidgetLayout获取指定对象数据 */
   @action.bound
   getPropValueByWidgetLayout(propIndexRoute, currentWidgetLayout) {
     // 1. 先获取当前元素对象数据

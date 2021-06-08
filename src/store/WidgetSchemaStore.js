@@ -69,6 +69,11 @@ export default class WidgetSchemaStore {
    */
   @observable curMockData = {};
 
+  /**
+   * 记录当前JSONEditor的更新时间
+   */
+  @observable lastUpdateTime = new Date().getTime();
+
   @computed get widgetLayoutObj() {
     return toJS(this.widgetLayout);
   }
@@ -149,7 +154,16 @@ export default class WidgetSchemaStore {
     // 如果ignore为true则跳过，避免重复触发onChange
     if (!ignore) {
       this.onChange(this.widgetSchemaObj);
+      this.updateLastTime();
     }
+  }
+
+  /**
+   * 更新lastUpdateTime
+   */
+  @action.bound
+  updateLastTime() {
+    this.lastUpdateTime = new Date().getTime();
   }
 
   /** 根据索引路径获取对应的key值路径 */
