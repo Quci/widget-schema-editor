@@ -4,12 +4,8 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Checkbox, Input, Select, Tooltip } from 'antd';
 const { Option } = Select;
-import { InfoCircleOutlined } from '@ant-design/icons';
-import {
-  getCurrentFormat,
-  isFirstSchemaData,
-  keyRoute2indexRoute,
-} from '@wibetter/json-utils';
+import { InfoCircleOutlined, ClearOutlined } from '@ant-design/icons';
+import { getCurrentFormat, isFirstSchemaData } from '@wibetter/json-utils';
 // import { getPropValueByWidgetLayout } from '$utils/index';
 import './index.scss';
 
@@ -121,6 +117,11 @@ class BaseFormSchema extends React.PureComponent {
     return isConfigProp;
   };
 
+  clearConfigProp = () => {
+    const { jsonKey, clearConfigProp } = this.props;
+    clearConfigProp(jsonKey);
+  };
+
   render() {
     const {
       parentType,
@@ -139,7 +140,6 @@ class BaseFormSchema extends React.PureComponent {
     const isConditionProp = this.checkConditionProp(); // 检查是否是条件字段
     // 获取唯一id
     let curNodeKey = `${curLastUpdateTime}-${nodeKey}-${elemIndexRoute}-${indexRoute}-${indexRoute}`;
-    const tooltipText = `${jsonKey || targetJsonSchema.title}是条件字段`;
 
     // 获取当前字段的条件规则
     let isShowCurProp = true; // 是否需要显示当前字段
@@ -177,54 +177,61 @@ class BaseFormSchema extends React.PureComponent {
     return (
       <>
         {targetJsonSchema && (
-          <Tooltip title={`${isConditionProp ? tooltipText : ''}`}>
-            <div
-              className={`base-schema-box ${
-                isConditionProp ? 'is-condition-prop' : ''
-              }`}
-              id={curNodeKey}
-              key={curNodeKey}
-            >
-              <div className="key-input-item">
+          <div
+            className={`base-schema-box ${
+              isConditionProp ? 'is-condition-prop' : ''
+            }`}
+            id={curNodeKey}
+            key={curNodeKey}
+          >
+            <div className="key-input-item">
+              <Tooltip title={`${jsonKey || targetJsonSchema.title}是条件字段`}>
                 <Input value={jsonKey || 'key值不存在'} disabled={readOnly} />
-              </div>
-              <div className="type-select-item">
-                <Select
-                  value={currentFormat}
-                  style={{ width: 150 }}
-                  disabled={readOnly}
-                >
-                  <Option value={currentFormat}>{currentFormat}</Option>
-                </Select>
-              </div>
-              <div className="title-input-item">
-                <Input value={targetJsonSchema.title} disabled={readOnly} />
-              </div>
-              <div className="operate-item">
-                {isShowCurProp && !isFirstSchema && (
-                  <Tooltip title="设置为可配置项">
-                    <Checkbox
-                      id={curNodeKey}
-                      key={curNodeKey}
-                      onChange={this.setProp2configZProps}
-                      defaultChecked={isConfigProp}
-                    >
-                      可配置
-                    </Checkbox>
-                  </Tooltip>
-                )}
-                {!isShowCurProp && (
-                  <Tooltip
-                    title={`请先将条件字段${
-                      conditionPropKey ? conditionPropKey : ''
-                    }设置为可配置`}
-                  >
-                    <InfoCircleOutlined />
-                  </Tooltip>
-                )}
-              </div>
+              </Tooltip>
             </div>
-          </Tooltip>
+            <div className="type-select-item">
+              <Select
+                value={currentFormat}
+                style={{ width: 150 }}
+                disabled={readOnly}
+              >
+                <Option value={currentFormat}>{currentFormat}</Option>
+              </Select>
+            </div>
+            <div className="title-input-item">
+              <Tooltip title={`${targetJsonSchema.title || jsonKey}是条件字段`}>
+                <Input value={targetJsonSchema.title} disabled={readOnly} />
+              </Tooltip>
+            </div>
+            <div className="operate-item">
+              {isFirstSchema && targetJsonSchema.propertyOrder.length > 0 && (
+                <Tooltip title="点击清空此对象下面的可配置项">
+                  <ClearOutlined onClick={this.clearConfigProp} />
+                </Tooltip>
+              )}
+              {isShowCurProp && !isFirstSchema && (
+                <Tooltip title="设置为可配置项">
+                  <Checkbox
+                    id={curNodeKey}
+                    key={curNodeKey}
+                    onChange={this.setProp2configZProps}
+                    defaultChecked={isConfigProp}
+                  >
+                    可配置
+                  </Checkbox>
+                </Tooltip>
+              )}
+              {!isShowCurProp && (
+                <Tooltip
+                  title={`请先将条件字段${
+                    conditionPropKey ? conditionPropKey : ''
+                  }设置为可配置`}
+                >
+                  <InfoCircleOutlined />
+                </Tooltip>
+              )}
+            </div>
+          </div>
         )}
         {!targetJsonSchema && (
           <div className="base-schema-box">
@@ -249,4 +256,5 @@ export default inject((stores) => ({
   addConfigProp: stores.widgetSchemaStore.addConfigProp,
   cancelConfigProp: stores.widgetSchemaStore.cancelConfigProp,
   curLastUpdateTime: stores.widgetSchemaStore.lastUpdateTime,
+  clearConfigProp: stores.widgetSchemaStore.clearConfigProp,
 }))(observer(BaseFormSchema));

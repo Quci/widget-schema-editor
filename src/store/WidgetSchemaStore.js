@@ -333,4 +333,18 @@ export default class WidgetSchemaStore {
     // 触发onChange事件
     this.widgetSchemaChange();
   }
+
+  /**
+   * 清楚指定对象下面的所有可配置项
+   * */
+  @action.bound
+  clearConfigProp(jsonKey) {
+    if (jsonKey && this.widgetSchema.properties[jsonKey]) {
+      this.widgetSchema.properties[jsonKey].properties = {};
+      this.widgetSchema.properties[jsonKey].propertyOrder = [];
+      this.widgetSchema.properties[jsonKey].required = [];
+      // 触发onChange事件
+      this.widgetSchemaChange();
+    }
+  }
 }
