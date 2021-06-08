@@ -390,7 +390,7 @@ class UIWidgetSchema extends React.PureComponent {
             width={700}
             visible={elemSchemaVisible}
             onCancel={this.closeElemSchema}
-            onOk={this.closeElemSchema}
+            footer={null}
           >
             <ElemSchema
               elemIndexRoute={elemIndexRoute}
