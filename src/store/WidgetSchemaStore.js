@@ -339,10 +339,19 @@ export default class WidgetSchemaStore {
    * */
   @action.bound
   clearConfigProp(jsonKey) {
-    if (jsonKey && this.widgetSchema.properties[jsonKey]) {
-      this.widgetSchema.properties[jsonKey].properties = {};
-      this.widgetSchema.properties[jsonKey].propertyOrder = [];
-      this.widgetSchema.properties[jsonKey].required = [];
+    // 获取当前配置字段的类型归属
+    let propType = 'style';
+    if (jsonKey === 'func' || jsonKey === 'props') {
+      propType = 'func';
+    } else if (jsonKey === 'style') {
+      propType = 'style';
+    } else if (jsonKey === 'data' || jsonKey === 'event') {
+      propType = 'data';
+    }
+    if (propType && this.widgetSchema.properties[propType]) {
+      this.widgetSchema.properties[propType].properties = {};
+      this.widgetSchema.properties[propType].propertyOrder = [];
+      this.widgetSchema.properties[propType].required = [];
       // 触发onChange事件
       this.widgetSchemaChange();
     }

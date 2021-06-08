@@ -21,7 +21,7 @@ class BaseFormSchema extends React.PureComponent {
   constructor(props) {
     super(props);
     // 这边绑定是必要的，这样 `this` 才能在回调函数中使用
-    this.setProp2configZProps = this.setProp2configZProps.bind(this);
+    this.setProp2configProp = this.setProp2configProp.bind(this);
   }
 
   /** 将当前字段设置为可配置项
@@ -32,7 +32,7 @@ class BaseFormSchema extends React.PureComponent {
    * jsonKey：当前字段在jsonSchema中的key值
    * targetJsonSchema：当前字段Schema数据
    * */
-  setProp2configZProps = (event) => {
+  setProp2configProp = (event) => {
     const { checked } = event.target;
     const { addConfigProp } = this.props;
     if (checked) {
@@ -214,7 +214,7 @@ class BaseFormSchema extends React.PureComponent {
                   <Checkbox
                     id={curNodeKey}
                     key={curNodeKey}
-                    onChange={this.setProp2configZProps}
+                    onChange={this.setProp2configProp}
                     defaultChecked={isConfigProp}
                   >
                     可配置

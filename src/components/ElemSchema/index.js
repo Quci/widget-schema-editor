@@ -95,7 +95,6 @@ class ElemSchema extends React.PureComponent {
                   nodeKey: 'first-schema',
                   targetJsonSchema: jsonSchema,
                   key: 'schema',
-                  isFirstSchema: true,
                 })}
             </Tree>
           </>
