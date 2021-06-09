@@ -32,54 +32,60 @@ class BaseFormSchema extends React.PureComponent {
    * jsonKey：当前字段在jsonSchema中的key值
    * targetJsonSchema：当前字段Schema数据
    * */
-  setProp2configProp = (event) => {
-    const { checked } = event.target;
+  setProp2configProp = () => {
     const { addConfigProp } = this.props;
-    if (checked) {
-      // 将当前字段设置为可配置项
-      const {
-        widgetLayoutObj,
-        elemIndexRoute,
-        jsonSchema,
-        getPropValueByWidgetLayout,
-      } = this.props; // 当前字段相关数据
-      const { parentType, indexRoute, jsonKey, targetJsonSchema } = this.props; // 当前字段相关数据
-      const elemJsonSchema = toJS(jsonSchema); // 当前元件Schema
-      const propJsonSchema = toJS(targetJsonSchema); // 当前字段schema
-      // 获取当前字段的配置数值
-      const curPropValue = getPropValueByWidgetLayout(
-        indexRoute,
-        widgetLayoutObj,
-      );
-      // 1.增加"动态参数"标识
-      propJsonSchema.isDynamicParam = true;
-      // 2.在字段Schema中记录原始路径值
-      propJsonSchema['elemIndexRoute'] = elemIndexRoute;
-      propJsonSchema['propIndexRoute'] = indexRoute;
-      // 3.在描述字段中增加元素标识
-      if (propJsonSchema.description) {
-        propJsonSchema[
-          'description'
-        ] = `${elemJsonSchema.title}-${propJsonSchema.title}：${propJsonSchema.description}`;
-      } else {
-        propJsonSchema[
-          'description'
-        ] = `${elemJsonSchema.title}-${propJsonSchema.title}`;
-      }
-      // 4.设置默认值
-      propJsonSchema['default'] = curPropValue; // 备注：此处不能增加默认值，因为类型不同其默认值也不同
-      // 5.判断是否是条件字段
-      const isConditionProp = this.checkConditionProp(); // 检查是否是条件字段
-      propJsonSchema['isConditionProp'] = isConditionProp;
+    // 将当前字段设置为可配置项
+    const {
+      widgetLayoutObj,
+      elemIndexRoute,
+      jsonSchema,
+      getPropValueByWidgetLayout,
+    } = this.props; // 当前字段相关数据
+    const { parentType, indexRoute, jsonKey, targetJsonSchema } = this.props; // 当前字段相关数据
+    const elemJsonSchema = toJS(jsonSchema); // 当前元件Schema
+    const propJsonSchema = toJS(targetJsonSchema); // 当前字段schema
+    // 获取当前字段的配置数值
+    const curPropValue = getPropValueByWidgetLayout(
+      indexRoute,
+      widgetLayoutObj,
+    );
+    // 1.增加"动态参数"标识
+    propJsonSchema.isDynamicParam = true;
+    // 2.在字段Schema中记录原始路径值
+    propJsonSchema['elemIndexRoute'] = elemIndexRoute;
+    propJsonSchema['propIndexRoute'] = indexRoute;
+    // 3.在描述字段中增加元素标识
+    if (propJsonSchema.description) {
+      propJsonSchema[
+        'description'
+      ] = `${elemJsonSchema.title}-${propJsonSchema.title}：${propJsonSchema.description}`;
+    } else {
+      propJsonSchema[
+        'description'
+      ] = `${elemJsonSchema.title}-${propJsonSchema.title}`;
+    }
+    // 4.设置默认值
+    propJsonSchema['default'] = curPropValue; // 备注：此处不能增加默认值，因为类型不同其默认值也不同
+    // 5.判断是否是条件字段
+    const isConditionProp = this.checkConditionProp(); // 检查是否是条件字段
+    propJsonSchema['isConditionProp'] = isConditionProp;
 
-      // 6.添加可配置字段
-      addConfigProp({
-        elemIndexRoute: elemIndexRoute,
-        propIndexRoute: indexRoute,
-        propType: parentType,
-        jsonKey,
-        propSchema: propJsonSchema,
-      });
+    // 6.添加可配置字段
+    addConfigProp({
+      elemIndexRoute: elemIndexRoute,
+      propIndexRoute: indexRoute,
+      propType: parentType,
+      jsonKey,
+      propSchema: propJsonSchema,
+    });
+  };
+
+  // 可配置开发事件处理方法
+  propCheckboxEvent = (event) => {
+    const { checked } = event.target;
+    if (checked) {
+      // 将当前字段设置为可配置
+      this.setProp2configProp();
     } else {
       this.cancelConfigProp();
     }
@@ -145,21 +151,23 @@ class BaseFormSchema extends React.PureComponent {
     // 获取唯一id
     let curNodeKey = `${curLastUpdateTime}-${nodeKey}-${elemIndexRoute}-${indexRoute}-${indexRoute}`;
 
-    // 获取当前字段的条件规则
-    let isShowCurProp = true; // 是否需要显示当前字段
+    /** 1、是否需要显示当前字段 */
+    let isShowCurProp = true;
     let hiddenRule = {};
+    /** 2、获取当前字段的条件规则 */
     if (targetJsonSchema.hiddenRule) {
       hiddenRule = targetJsonSchema.hiddenRule;
     }
-    let conditionPropKey = ''; // 用于记录对应的条件字段jsonKey
-    // 当其对应的条件字段设置为可配置时才显示联动字段
+    /** 用于记录对应的条件字段jsonKey，用于提示用户先将其条件字段设置为可配置 */
+    let conditionPropKey = '';
+    /** 3、当其对应的条件字段设置为可配置时才显示联动字段 */
     if (hiddenRule.conditionProp) {
       const curConditionProp = hiddenRule.conditionProp;
       conditionPropKey = curConditionProp.key;
       const conditionPropIndexRoute = keyRoute2indexRoute(
         curConditionProp.keyRoute,
       );
-      // 检查其条件字段是否设置为可配置，只有设置为可配置才显示当前字段
+      /** 4、检查其条件字段是否设置为可配置（只有设置为可配置才显示当前字段） */
       isShowCurProp = checkConfigProp({
         elemIndexRoute: elemIndexRoute,
         propIndexRoute: conditionPropIndexRoute,
@@ -167,16 +175,27 @@ class BaseFormSchema extends React.PureComponent {
         jsonKey: conditionPropKey,
       });
     }
-    // 将条件字段的数值作为key的一部分
-    curNodeKey = `${curNodeKey}-${isShowCurProp}`;
 
-    // 识别特殊情况：当前设置为可配置，但其对应的条件字段不是可配置
+    /** 识别特殊情况：当前设置为可配置，但其对应的条件字段不是可配置 */
     if (!isShowCurProp && isConfigProp) {
       setTimeout(() => {
         // 自动取消当前字段为可配置字段
         this.cancelConfigProp();
       }, 0);
     }
+
+    let configCheckboxDisabled = false;
+    /** 当前为关联字段，并且其条件字段设置为可配置，则其关联字段自动设置为可配置，并设置为只读（只能是可配置字段）*/
+    /*if (conditionPropKey && isShowCurProp) {
+      configCheckboxDisabled = true;
+      setTimeout(() => {
+        // 自动将当前字段为可配置字段
+        this.setProp2configProp();
+      }, 0);
+    }*/
+
+    // 将条件字段的数值作为key的一部分
+    curNodeKey = `${curNodeKey}-${isShowCurProp}-${configCheckboxDisabled}`;
 
     return (
       <>
@@ -218,8 +237,9 @@ class BaseFormSchema extends React.PureComponent {
                   <Checkbox
                     id={curNodeKey}
                     key={curNodeKey}
-                    onChange={this.setProp2configProp}
+                    onChange={this.propCheckboxEvent}
                     defaultChecked={isConfigProp}
+                    disabled={configCheckboxDisabled}
                   >
                     可配置
                   </Checkbox>
