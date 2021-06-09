@@ -58,8 +58,7 @@ const ObjectSchema = (props) => {
   const { jsonKey, indexRoute, nodeKey, targetJsonSchema, isOnlyShowChild } =
     props;
   const currentFormat = getCurrentFormat(targetJsonSchema);
-  const isFirstSchema =
-    targetJsonSchema.isFixedSchema || isFirstSchemaData(currentFormat); // 一级固定类型元素不允许拖拽
+  const isFirstSchema = isFirstSchemaData(currentFormat); // 一级固定类型元素不允许拖拽
 
   /** 先获取当前节点的properties内容 */
   const propertiesContElem = propertiesRender({

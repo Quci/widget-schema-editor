@@ -69,6 +69,11 @@ export default class WidgetSchemaStore {
    */
   @observable curMockData = {};
 
+  /**
+   * 记录当前JSONEditor的更新时间
+   */
+  @observable lastUpdateTime = new Date().getTime();
+
   @computed get widgetLayoutObj() {
     return toJS(this.widgetLayout);
   }
@@ -149,7 +154,16 @@ export default class WidgetSchemaStore {
     // 如果ignore为true则跳过，避免重复触发onChange
     if (!ignore) {
       this.onChange(this.widgetSchemaObj);
+      this.updateLastTime();
     }
+  }
+
+  /**
+   * 更新lastUpdateTime
+   */
+  @action.bound
+  updateLastTime() {
+    this.lastUpdateTime = new Date().getTime();
   }
 
   /** 根据索引路径获取对应的key值路径 */
@@ -318,5 +332,28 @@ export default class WidgetSchemaStore {
     );
     // 触发onChange事件
     this.widgetSchemaChange();
+  }
+
+  /**
+   * 清楚指定对象下面的所有可配置项
+   * */
+  @action.bound
+  clearConfigProp(jsonKey) {
+    // 获取当前配置字段的类型归属
+    let propType = 'style';
+    if (jsonKey === 'func' || jsonKey === 'props') {
+      propType = 'func';
+    } else if (jsonKey === 'style') {
+      propType = 'style';
+    } else if (jsonKey === 'data' || jsonKey === 'event') {
+      propType = 'data';
+    }
+    if (propType && this.widgetSchema.properties[propType]) {
+      this.widgetSchema.properties[propType].properties = {};
+      this.widgetSchema.properties[propType].propertyOrder = [];
+      this.widgetSchema.properties[propType].required = [];
+      // 触发onChange事件
+      this.widgetSchemaChange();
+    }
   }
 }

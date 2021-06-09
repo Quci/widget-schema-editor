@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Checkbox, Input, Select, Tooltip } from 'antd';
 const { Option } = Select;
+import { InfoCircleOutlined, ClearOutlined } from '@ant-design/icons';
 import { getCurrentFormat, isFirstSchemaData } from '@wibetter/json-utils';
 // import { getPropValueByWidgetLayout } from '$utils/index';
 import './index.scss';
@@ -20,7 +21,7 @@ class BaseFormSchema extends React.PureComponent {
   constructor(props) {
     super(props);
     // 这边绑定是必要的，这样 `this` 才能在回调函数中使用
-    this.setProp2configZProps = this.setProp2configZProps.bind(this);
+    this.setProp2configProp = this.setProp2configProp.bind(this);
   }
 
   /** 将当前字段设置为可配置项
@@ -31,9 +32,9 @@ class BaseFormSchema extends React.PureComponent {
    * jsonKey：当前字段在jsonSchema中的key值
    * targetJsonSchema：当前字段Schema数据
    * */
-  setProp2configZProps = (event) => {
+  setProp2configProp = (event) => {
     const { checked } = event.target;
-    const { addConfigProp, cancelConfigProp } = this.props;
+    const { addConfigProp } = this.props;
     if (checked) {
       // 将当前字段设置为可配置项
       const {
@@ -66,8 +67,12 @@ class BaseFormSchema extends React.PureComponent {
         ] = `${elemJsonSchema.title}-${propJsonSchema.title}`;
       }
       // 4.设置默认值
-      propJsonSchema['default'] = curPropValue;
-      // 5.添加可配置字段
+      propJsonSchema['default'] = curPropValue; // 备注：此处不能增加默认值，因为类型不同其默认值也不同
+      // 5.判断是否是条件字段
+      const isConditionProp = this.checkConditionProp(); // 检查是否是条件字段
+      propJsonSchema['isConditionProp'] = isConditionProp;
+
+      // 6.添加可配置字段
       addConfigProp({
         elemIndexRoute: elemIndexRoute,
         propIndexRoute: indexRoute,
@@ -76,15 +81,20 @@ class BaseFormSchema extends React.PureComponent {
         propSchema: propJsonSchema,
       });
     } else {
-      // 取消当前字段为可配置项
-      const { parentType, elemIndexRoute, indexRoute, jsonKey } = this.props;
-      cancelConfigProp({
-        elemIndexRoute: elemIndexRoute,
-        propIndexRoute: indexRoute,
-        propType: parentType,
-        jsonKey,
-      });
+      this.cancelConfigProp();
     }
+  };
+
+  cancelConfigProp = () => {
+    const { cancelConfigProp } = this.props;
+    // 取消当前字段为可配置项
+    const { parentType, elemIndexRoute, indexRoute, jsonKey } = this.props;
+    cancelConfigProp({
+      elemIndexRoute: elemIndexRoute,
+      propIndexRoute: indexRoute,
+      propType: parentType,
+      jsonKey,
+    });
   };
 
   /** 检查当前字段是否可配置 */
@@ -101,22 +111,87 @@ class BaseFormSchema extends React.PureComponent {
     return isConfigProp;
   };
 
+  /** 检查当前字段是否是条件字段 */
+  checkConditionProp = () => {
+    const { indexRoute } = this.props;
+    const { indexRoute2keyRoute, checkConditionProp } = this.props;
+    // 获取对应的keyRoute
+    const curKeyRoute = indexRoute2keyRoute(indexRoute);
+    const isConfigProp = checkConditionProp(curKeyRoute);
+    return isConfigProp;
+  };
+
+  clearConfigProp = () => {
+    const { jsonKey, clearConfigProp } = this.props;
+    clearConfigProp(jsonKey);
+  };
+
   render() {
-    const { jsonKey, elemIndexRoute, targetJsonSchema, indexRoute } =
-      this.props;
+    const {
+      parentType,
+      nodeKey,
+      jsonKey,
+      elemIndexRoute,
+      targetJsonSchema,
+      indexRoute,
+      curLastUpdateTime,
+    } = this.props;
+    const { checkConfigProp, keyRoute2indexRoute } = this.props;
     const currentFormat = getCurrentFormat(targetJsonSchema);
     const isFirstSchema = isFirstSchemaData(currentFormat) || false; // 是否是最外层的schema元素
     const readOnly = false; // 默认只读
-    const isConfigProp = this.checkConfigProp();
+    const isConfigProp = this.checkConfigProp(); // 检查是否可配置
+    const isConditionProp = this.checkConditionProp(); // 检查是否是条件字段
     // 获取唯一id
-    const nodeKey = `${elemIndexRoute}-${indexRoute}-${indexRoute}`;
+    let curNodeKey = `${curLastUpdateTime}-${nodeKey}-${elemIndexRoute}-${indexRoute}-${indexRoute}`;
+
+    // 获取当前字段的条件规则
+    let isShowCurProp = true; // 是否需要显示当前字段
+    let hiddenRule = {};
+    if (targetJsonSchema.hiddenRule) {
+      hiddenRule = targetJsonSchema.hiddenRule;
+    }
+    let conditionPropKey = ''; // 用于记录对应的条件字段jsonKey
+    // 当其对应的条件字段设置为可配置时才显示联动字段
+    if (hiddenRule.conditionProp) {
+      const curConditionProp = hiddenRule.conditionProp;
+      conditionPropKey = curConditionProp.key;
+      const conditionPropIndexRoute = keyRoute2indexRoute(
+        curConditionProp.keyRoute,
+      );
+      // 检查其条件字段是否设置为可配置，只有设置为可配置才显示当前字段
+      isShowCurProp = checkConfigProp({
+        elemIndexRoute: elemIndexRoute,
+        propIndexRoute: conditionPropIndexRoute,
+        propType: parentType,
+        jsonKey: conditionPropKey,
+      });
+    }
+    // 将条件字段的数值作为key的一部分
+    curNodeKey = `${curNodeKey}-${isShowCurProp}`;
+
+    // 识别特殊情况：当前设置为可配置，但其对应的条件字段不是可配置
+    if (!isShowCurProp && isConfigProp) {
+      setTimeout(() => {
+        // 自动取消当前字段为可配置字段
+        this.cancelConfigProp();
+      }, 0);
+    }
 
     return (
       <>
         {targetJsonSchema && (
-          <div className="base-schema-box" id={nodeKey} key={nodeKey}>
+          <div
+            className={`base-schema-box ${
+              isConditionProp ? 'is-condition-prop' : ''
+            }`}
+            id={curNodeKey}
+            key={curNodeKey}
+          >
             <div className="key-input-item">
-              <Input value={jsonKey || 'key值不存在'} disabled={readOnly} />
+              <Tooltip title={`${jsonKey || targetJsonSchema.title}是条件字段`}>
+                <Input value={jsonKey || 'key值不存在'} disabled={readOnly} />
+              </Tooltip>
             </div>
             <div className="type-select-item">
               <Select
@@ -128,19 +203,35 @@ class BaseFormSchema extends React.PureComponent {
               </Select>
             </div>
             <div className="title-input-item">
-              <Input value={targetJsonSchema.title} disabled={readOnly} />
+              <Tooltip title={`${targetJsonSchema.title || jsonKey}是条件字段`}>
+                <Input value={targetJsonSchema.title} disabled={readOnly} />
+              </Tooltip>
             </div>
             <div className="operate-item">
-              {!isFirstSchema && (
-                <Tooltip title="设置为可配置项（静态参数转为动态参数）">
+              {isFirstSchema && targetJsonSchema.propertyOrder.length > 0 && (
+                <Tooltip title="点击清空此对象下面的可配置项">
+                  <ClearOutlined onClick={this.clearConfigProp} />
+                </Tooltip>
+              )}
+              {isShowCurProp && !isFirstSchema && (
+                <Tooltip title="设置为可配置项">
                   <Checkbox
-                    id={nodeKey}
-                    key={nodeKey}
-                    onChange={this.setProp2configZProps}
+                    id={curNodeKey}
+                    key={curNodeKey}
+                    onChange={this.setProp2configProp}
                     defaultChecked={isConfigProp}
                   >
                     可配置
                   </Checkbox>
+                </Tooltip>
+              )}
+              {!isShowCurProp && (
+                <Tooltip
+                  title={`请先将条件字段${
+                    conditionPropKey ? conditionPropKey : ''
+                  }设置为可配置`}
+                >
+                  <InfoCircleOutlined />
                 </Tooltip>
               )}
             </div>
@@ -160,9 +251,14 @@ export default inject((stores) => ({
   elemIndexRoute: stores.elemSchemaStore.elemIndexRoute,
   curElemDataObj: stores.elemSchemaStore.curElemDataObj,
   jsonSchema: stores.elemSchemaStore.jsonSchema,
+  indexRoute2keyRoute: stores.elemSchemaStore.indexRoute2keyRoute,
+  keyRoute2indexRoute: stores.elemSchemaStore.keyRoute2indexRoute,
+  checkConditionProp: stores.elemSchemaStore.checkConditionProp,
   getPropValueByWidgetLayout: stores.elemSchemaStore.getPropValueByWidgetLayout,
   widgetLayoutObj: stores.widgetSchemaStore.widgetLayoutObj,
   checkConfigProp: stores.widgetSchemaStore.checkConfigProp,
   addConfigProp: stores.widgetSchemaStore.addConfigProp,
   cancelConfigProp: stores.widgetSchemaStore.cancelConfigProp,
+  curLastUpdateTime: stores.widgetSchemaStore.lastUpdateTime,
+  clearConfigProp: stores.widgetSchemaStore.clearConfigProp,
 }))(observer(BaseFormSchema));

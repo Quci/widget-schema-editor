@@ -8,6 +8,13 @@
   justify-content: center;
   align-items: center;
 
+  // 条件字段附加样式
+  &.is-condition-prop {
+    color: #1d39c4;
+    background: #f0f5ff;
+    border: 1px solid #adc6ff;
+  }
+
   .warn-text {
     width: 100%;
     color: #ad4e00;
