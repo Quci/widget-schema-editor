@@ -68,7 +68,11 @@ class BaseFormSchema extends React.PureComponent {
       }
       // 4.设置默认值
       propJsonSchema['default'] = curPropValue; // 备注：此处不能增加默认值，因为类型不同其默认值也不同
-      // 5.添加可配置字段
+      // 5.判断是否是条件字段
+      const isConditionProp = this.checkConditionProp(); // 检查是否是条件字段
+      propJsonSchema['isConditionProp'] = isConditionProp;
+
+      // 6.添加可配置字段
       addConfigProp({
         elemIndexRoute: elemIndexRoute,
         propIndexRoute: indexRoute,
