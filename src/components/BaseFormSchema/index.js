@@ -37,6 +37,7 @@ class BaseFormSchema extends React.PureComponent {
     // 将当前字段设置为可配置项
     const {
       widgetLayoutObj,
+      curElemDataObj,
       elemIndexRoute,
       jsonSchema,
       getPropValueByWidgetLayout,
@@ -69,7 +70,9 @@ class BaseFormSchema extends React.PureComponent {
     // 5.判断是否是条件字段
     const isConditionProp = this.checkConditionProp(); // 检查是否是条件字段
     propJsonSchema['isConditionProp'] = isConditionProp;
-
+    // 6.记录当前配置项对应的元素类型和名称
+    propJsonSchema['elemType'] = curElemDataObj.type;
+    propJsonSchema['elemName'] = curElemDataObj.name;
     // 6.添加可配置字段
     addConfigProp({
       elemIndexRoute: elemIndexRoute,
