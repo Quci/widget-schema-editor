@@ -62,7 +62,7 @@ module.exports = {
   dev: {
     entry: {
       // webpack构建入口
-      index: './src/index.js', // 调试模式的入口
+      index: './src/demo1.js', // 调试模式的入口
     },
     // 用于开启本地调试模式的相关配置信息
     NODE_ENV: 'development',
@@ -89,18 +89,14 @@ module.exports = {
     productionGzipExtensions: ['js', 'css', 'json'],
     bundleAnalyzerReport: false,
   },
-  build2esm: {
-    input: resolve('src/main.js'),
-    fileName: 'index',
-  },
   build: {
     entry: { // webpack构建入口
-      index: './src/index.js', // 构建测试Demo的入口
+      index: './src/demo1.js', // 构建测试Demo的入口
     },
     // 用于构建生产环境代码的相关配置信息
     NODE_ENV: 'production',
-    assetsRoot: resolve('./test'), // 打包后的文件绝对路径（物理路径）
-    assetsPublicPath: '/widget-schema-editor/test/', // 设置静态资源的引用路径（根域名+路径）
+    assetsRoot: resolve('./demo1'), // 打包后的文件绝对路径（物理路径）
+    assetsPublicPath: '/widget-schema-editor/demo1/', // 设置静态资源的引用路径（根域名+路径）
     assetsSubDirectory: '', // 资源引用二级路径
     productionSourceMap: false,
     productionGzip: false,

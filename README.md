@@ -5,7 +5,7 @@
 技术栈：React/Mobx/Ant Design
 
 在线Demo：
-[点击访问在线Demo](https://widget-editor.github.io/widget-schema-editor/)
+[点击访问在线Demo](https://widget-editor.github.io/widget-schema-editor/demo1/index.html)
 
 ## 安装
 
