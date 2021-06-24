@@ -157,7 +157,6 @@ class UIWidgetSchema extends React.PureComponent {
     if (hasConfigProp) {
       configPropCount = this.props.checkConfigPropCount(currentIndex);
     }
-
     return (
       <div className="layout-item-cont">
         <div className="layout-item-title" title={title}>

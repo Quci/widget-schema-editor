@@ -1,6 +1,6 @@
 {
   "name": "@wibetter/widget-schema-editor",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "UI组件模型设置（添加可配置项）",
   "keywords": [
     "jsonSchema",
