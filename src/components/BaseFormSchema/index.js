@@ -59,11 +59,11 @@ class BaseFormSchema extends React.PureComponent {
     if (propJsonSchema.description) {
       propJsonSchema[
         'description'
-      ] = `${elemJsonSchema.title}-${propJsonSchema.title}：${propJsonSchema.description}`;
+      ] = `${elemJsonSchema.title}(${elemIndexRoute})-${propJsonSchema.title}: ${propJsonSchema.description}`;
     } else {
       propJsonSchema[
         'description'
-      ] = `${elemJsonSchema.title}-${propJsonSchema.title}`;
+      ] = `${elemJsonSchema.title}(${elemIndexRoute})-${propJsonSchema.title}`;
     }
     // 4.设置默认值
     propJsonSchema['default'] = curPropValue; // 备注：此处不能增加默认值，因为类型不同其默认值也不同
@@ -73,7 +73,10 @@ class BaseFormSchema extends React.PureComponent {
     // 6.记录当前配置项对应的元素类型和名称
     propJsonSchema['elemType'] = curElemDataObj.type;
     propJsonSchema['elemName'] = curElemDataObj.name;
-    // 6.添加可配置字段
+    // 6.记录当前配置项所有分类和原始key值
+    propJsonSchema['propType'] = parentType;
+    propJsonSchema['jsonKey'] = jsonKey;
+    // 7.添加可配置字段
     addConfigProp({
       elemIndexRoute: elemIndexRoute,
       propIndexRoute: indexRoute,
@@ -83,7 +86,7 @@ class BaseFormSchema extends React.PureComponent {
     });
   };
 
-  // 可配置开发事件处理方法
+  // 可配置开关事件处理方法
   propCheckboxEvent = (event) => {
     const { checked } = event.target;
     if (checked) {
