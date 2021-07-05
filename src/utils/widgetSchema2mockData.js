@@ -4,7 +4,7 @@
  * widgetSchema: 组件模型数据
  * widgetLayout: 组件内容数据
  * */
-import { AntdUISchema, BoxSchemaList } from '@wibetter/ui-schema-editor';
+import { AntdSchemaList, BoxSchemaList } from '@wibetter/ui-schema-editor';
 import {
   getJsonDataByKeyRoute,
   indexRoute2keyRoute,
@@ -51,10 +51,10 @@ export function getElemSchemaByElemData(curElem) {
     // 块级容器元素
     if (curElem.elemName === '固定布局') {
       // 固定定位块级容器元素
-      curElemSchema = BoxSchemaList['container'] || {};
+      curElemSchema = BoxSchemaList['fixed-container'] || {};
     } else if (curElem.elemName === '绝对布局') {
       // 绝对定位块级容器元素
-      curElemSchema = BoxSchemaList['container'] || {};
+      curElemSchema = BoxSchemaList['absolute-container'] || {};
     } else {
       // 普通块级容器元素
       curElemSchema = BoxSchemaList['container'] || {};
@@ -64,7 +64,7 @@ export function getElemSchemaByElemData(curElem) {
     curElemSchema = BoxSchemaList[curElem.type] || {};
   } else if (curElem.type === 'ui-materiel') {
     // 基础物料（基础元件和功能元件）
-    curElemSchema = AntdUISchema[`${curElem.name}Schema`] || {};
+    curElemSchema = AntdSchemaList[`${curElem.name}Schema`] || {};
   }
   return curElemSchema;
 }
