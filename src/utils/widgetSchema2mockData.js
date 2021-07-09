@@ -4,7 +4,11 @@
  * widgetSchema: 组件模型数据
  * widgetLayout: 组件内容数据
  * */
-import { AntdSchemaList, BoxSchemaList } from '@wibetter/ui-schema-editor';
+import {
+  AntdSchemaList,
+  BoxSchemaList,
+  AntvSchemaList,
+} from '@wibetter/ui-schema-editor';
 import {
   getJsonDataByKeyRoute,
   indexRoute2keyRoute,
@@ -64,7 +68,10 @@ export function getElemSchemaByElemData(curElem) {
     curElemSchema = BoxSchemaList[curElem.type] || {};
   } else if (curElem.type === 'ui-materiel') {
     // 基础物料（基础元件和功能元件）
-    curElemSchema = AntdSchemaList[`${curElem.name}Schema`] || {};
+    curElemSchema =
+      AntdSchemaList[`${curElem.name}Schema`] ||
+      AntvSchemaList[`${curElem.name}Schema`] ||
+      {};
   }
   return curElemSchema;
 }
