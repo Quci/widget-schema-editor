@@ -214,7 +214,13 @@ class BaseFormSchema extends React.PureComponent {
             key={curNodeKey}
           >
             <div className="key-input-item">
-              <Tooltip title={`${jsonKey || targetJsonSchema.title}是条件字段`}>
+              <Tooltip
+                title={
+                  isConditionProp
+                    ? `${jsonKey || targetJsonSchema.title}是条件字段`
+                    : ''
+                }
+              >
                 <Input value={jsonKey || 'key值不存在'} disabled={readOnly} />
               </Tooltip>
             </div>
@@ -228,7 +234,13 @@ class BaseFormSchema extends React.PureComponent {
               </Select>
             </div>
             <div className="title-input-item">
-              <Tooltip title={`${targetJsonSchema.title || jsonKey}是条件字段`}>
+              <Tooltip
+                title={
+                  isConditionProp
+                    ? `${targetJsonSchema.title || jsonKey}是条件字段`
+                    : ''
+                }
+              >
                 <Input value={targetJsonSchema.title} disabled={readOnly} />
               </Tooltip>
             </div>
